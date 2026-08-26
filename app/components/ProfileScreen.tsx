@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   BarChart3,
   ShieldCheck,
@@ -25,6 +24,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Profile, Badge } from "../lib/types";
+import TooltipWrap from "./Tooltip";
 
 // Иконки для кастомных бейджей, выданных через админ-панель бота — ключ
 // должен совпадать с тем, что бот кладёт в поле `icon` (см. BADGE_ICON_PRESETS
@@ -118,7 +118,11 @@ export default function ProfileScreen({
           <div className="identity">
             <div className="name-row">
               {x.nickname}
-              {x.verified && <ShieldCheck size={17} className="verified-tick" />}
+              {x.verified && (
+                <TooltipWrap description="Данный игрок верифицирован.">
+                  <ShieldCheck size={17} className="verified-tick" />
+                </TooltipWrap>
+              )}
             </div>
             <div className="handle">
               {x.gameId}
@@ -333,31 +337,5 @@ function BadgePill({ badge, delay }: { badge: Badge; delay: number }) {
   // Есть описание — оборачиваем в тултип-обёртку. На десктопе работает
   // :hover (CSS), но в Telegram (мобильный webview) наведения курсором не
   // существует — там только тапы, поэтому дублируем показ через клик/тап.
-  return <BadgeTooltipWrap description={badge.description}>{pill}</BadgeTooltipWrap>;
-}
-
-function BadgeTooltipWrap({ description, children }: { description: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    // Тап в любое другое место закрывает подсказку.
-    const close = () => setOpen(false);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [open]);
-
-  return (
-    <span
-      className={`badge-tooltip-wrap ${open ? "badge-tooltip-open" : ""}`}
-      tabIndex={0}
-      onClick={(e) => {
-        e.stopPropagation();
-        setOpen((v) => !v);
-      }}
-    >
-      {children}
-      <span className="badge-tooltip">{description}</span>
-    </span>
-  );
+  return <TooltipWrap description={badge.description}>{pill}</TooltipWrap>;
 }
