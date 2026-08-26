@@ -8,9 +8,14 @@ import { useEffect, useState } from "react";
 export default function TooltipWrap({
   description,
   children,
+  placement = "top",
 }: {
   description: string;
   children: React.ReactNode;
+  // "top" — подсказка всплывает над элементом (по умолчанию, как у бейджей).
+  // "bottom" — под элементом; нужно там, где сверху мало места и подсказку
+  // иначе обрежет overflow:hidden родителя (например, шапка профиля).
+  placement?: "top" | "bottom";
 }) {
   const [open, setOpen] = useState(false);
 
@@ -23,7 +28,7 @@ export default function TooltipWrap({
 
   return (
     <span
-      className={`badge-tooltip-wrap ${open ? "badge-tooltip-open" : ""}`}
+      className={`badge-tooltip-wrap ${placement === "bottom" ? "badge-tooltip-below" : ""} ${open ? "badge-tooltip-open" : ""}`}
       tabIndex={0}
       onClick={(e) => {
         e.stopPropagation();
