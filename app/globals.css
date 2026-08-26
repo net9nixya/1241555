@@ -306,13 +306,13 @@ button {
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
 .avatar-ring-wrap {
   position: relative;
-  width: 84px;
-  height: 84px;
+  width: 112px;
+  height: 112px;
   flex-shrink: 0;
   filter: drop-shadow(0 0 14px rgba(255, 0, 85, 0.35));
 }
@@ -339,8 +339,8 @@ button {
 
 .avatar {
   position: absolute;
-  inset: 8px;
-  border-radius: 19px;
+  inset: 10px;
+  border-radius: 25px;
   overflow: hidden;
   background: linear-gradient(145deg, #23273a, #14161d);
   border: 1px solid var(--border-strong);
@@ -355,15 +355,25 @@ button {
 }
 
 /* Рамка на аватар, выданная через админ-панель бота — декоративный PNG
-   без фона, накладывается поверх кольца прогресса с запасом по краям.
-   Фиксированные px (а не %) + object-fit: contain — чтобы рамку не тянуло
-   по высоте, даже если родитель ведёт себя неожиданно во flex-контексте. */
+   без фона, накладывается поверх кольца прогресса. Сам PNG нарисован с
+   большим запасом (языки пламени выходят далеко за пределы прозрачного
+   "окна" под фото), поэтому размер тега нельзя ставить равным размеру
+   фото — тогда рамка окажется мельче или крупнее нужного.
+   Померено по альфа-каналу frame_gold.png: прозрачное окно под аватар
+   занимает ≈66.8% от стороны файла, т.е. сам файл нужно рисовать в
+   1 / 0.668 ≈ 1.497 раза крупнее видимого фото аватара, чтобы окно
+   легло ровно по краю фото. Аватар сейчас 92×92 (112px рамка − 2×10px
+   inset) → 92 × 1.497 ≈ 138px. Если размер аватара (.avatar-ring-wrap /
+   .avatar inset) изменится, домножай по этой же формуле, а не подбирай
+   на глаз. Фиксированные px (а не %) + object-fit: contain — чтобы рамку
+   не тянуло по высоте, даже если родитель ведёт себя неожиданно во
+   flex-контексте. */
 .avatar-frame-deco {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 142px;
-  height: 142px;
+  width: 138px;
+  height: 138px;
   transform: translate(-50%, -50%);
   object-fit: contain;
   pointer-events: none;
@@ -381,7 +391,7 @@ button {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
@@ -392,7 +402,7 @@ button {
 }
 
 .handle {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 2px;
 }
@@ -401,7 +411,7 @@ button {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 11px;
+  margin-top: 12px;
 }
 
 .badge {
