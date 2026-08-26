@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3, ArrowLeft, Search, Settings, BadgeQuestionMark } from "lucide-react";
+import { Clock3, ArrowLeft, Search, Settings, BadgeHelp } from "lucide-react";
 import { getTelegramInitData } from "./lib/telegram";
 import type { Profile } from "./lib/types";
 import { demoProfile } from "./lib/demo";
@@ -142,7 +142,7 @@ export default function Home() {
                     style={{ animationDelay: "0.03s" }}
                     aria-label="Поддержка"
                   >
-                    <BadgeQuestionMark size={18} />
+                    <BadgeHelp size={18} />
                   </a>
                   <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
                     Профиль
