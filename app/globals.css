@@ -1555,7 +1555,7 @@ button {
 .hero-settings-btn {
   position: absolute;
   top: 14px;
-  left: 14px;
+  right: 14px;
   z-index: 2;
   width: 34px;
   height: 34px;
@@ -1566,18 +1566,18 @@ button {
   background: rgba(255, 255, 255, 0.05);
   color: var(--muted);
   cursor: pointer;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, transform 0.15s ease;
 }
 
 .hero-settings-btn:hover {
   color: var(--text);
   border-color: rgba(255, 95, 176, 0.35);
   background: rgba(255, 95, 176, 0.08);
-  transform: rotate(45deg);
+  transform: translateY(-1px);
 }
 
 .hero-settings-btn:active {
-  transform: rotate(75deg) scale(0.92);
+  transform: translateY(0) scale(0.94);
 }
 
 /* ---------- ban mark ---------- */
