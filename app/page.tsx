@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3, ArrowLeft, Search, Settings } from "lucide-react";
+import { Clock3, ArrowLeft, Search, Settings, LifeBuoy } from "lucide-react";
 import { getTelegramInitData } from "./lib/telegram";
 import type { Profile } from "./lib/types";
 import { demoProfile } from "./lib/demo";
@@ -19,6 +19,11 @@ import SettingsPanel from "./components/SettingsPanel";
 // "зарегистрируйся" и всегда показывать demo-профиль, если бэкенд
 // недоступен (удобно для локальной разработки без COUNTER_FACEIT_API_URL).
 const SHOW_REGISTER_GATE = true;
+
+// Ссылка на чат поддержки — по умолчанию тот же бот, что и для регистрации
+// (см. RegisterGate.tsx), если нужен отдельный аккаунт поддержки — задай
+// NEXT_PUBLIC_SUPPORT_LINK в Environment Variables на Vercel.
+const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/Counterfaceit_bot";
 
 export default function Home() {
   const [p, setP] = useState<Profile | null>(null);
@@ -120,14 +125,34 @@ export default function Home() {
           <>
             <div className="header-row">
               {tab === "profile" ? (
-                <button
-                  type="button"
-                  className="icon-fab reveal"
-                  onClick={() => setSettingsOpen(true)}
-                  aria-label="Настройки профиля"
-                >
-                  <Settings size={18} />
-                </button>
+                <>
+                  <div className="header-icon-group reveal">
+                    <button
+                      type="button"
+                      className="icon-fab"
+                      onClick={() => setSettingsOpen(true)}
+                      aria-label="Настройки профиля"
+                    >
+                      <Settings size={18} />
+                    </button>
+                    <span className="icon-fab-label">Настройки</span>
+                  </div>
+                  <div className="header-icon-group reveal" style={{ animationDelay: "0.03s" }}>
+                    <a
+                      href={SUPPORT_LINK}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="icon-fab"
+                      aria-label="Поддержка"
+                    >
+                      <LifeBuoy size={18} />
+                    </a>
+                    <span className="icon-fab-label">Поддержка</span>
+                  </div>
+                  <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
+                    Профиль
+                  </span>
+                </>
               ) : (
                 <span className="icon-fab-spacer" aria-hidden="true" />
               )}
