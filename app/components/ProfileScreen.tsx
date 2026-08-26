@@ -19,7 +19,6 @@ import {
   Shield,
   Zap,
   Gem,
-  Settings,
   Ban,
   type LucideIcon,
 } from "lucide-react";
@@ -53,19 +52,22 @@ function hexWithAlpha(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export default function ProfileScreen({
-  profile,
-  onOpenSettings,
-}: {
-  profile: Profile;
-  // Передаётся только для СВОЕГО профиля (см. page.tsx) — иконка настроек
-  // не должна показываться, когда смотришь чужой профиль через топ/поиск.
-  onOpenSettings?: () => void;
-}) {
+// Геометрия квадратной рамки-прогресса вокруг аватара (см. avatar-ring-wrap
+// в globals.css) — скруглённый квадрат вместо круга: 84×84 вьюбокс, сама
+// рамка чуть меньше (78×78) с отступом 3px под толщину обводки, rx задаёт
+// скругление углов ("гладкие углы", как в референсе).
+const RING_BOX = 84;
+const RING_INSET = 3;
+const RING_SIZE = RING_BOX - RING_INSET * 2;
+const RING_RADIUS = 22;
+
+export default function ProfileScreen({ profile }: { profile: Profile }) {
   const x = profile;
   const initials = x.nickname.slice(0, 2).toUpperCase();
   const progressPct = x.nextLevel ? Math.max(6, Math.min(97, 100 - (x.needElo / 400) * 100)) : 100;
-  const ringCircumference = 2 * Math.PI * 38;
+  // Периметр скруглённого квадрата: две пары прямых сторон + четыре четверти
+  // окружности радиуса RING_RADIUS в углах.
+  const ringCircumference = 2 * (RING_SIZE - 2 * RING_RADIUS) * 2 + 2 * Math.PI * RING_RADIUS;
   const ringOffset = ringCircumference * (1 - progressPct / 100);
 
   return (
@@ -74,29 +76,33 @@ export default function ProfileScreen({
 
       {/* hero */}
       <section className="card hero reveal" style={{ animationDelay: "0.02s" }}>
-        {onOpenSettings && (
-          <button type="button" className="hero-settings-btn" onClick={onOpenSettings} aria-label="Настройки профиля">
-            <Settings size={16} />
-          </button>
-        )}
         <div className="hero-top">
           <div
             className="avatar-ring-wrap"
             style={{ "--ring-circumference": ringCircumference, "--ring-offset": ringOffset } as React.CSSProperties}
           >
-            <svg viewBox="0 0 84 84">
+            <svg viewBox={`0 0 ${RING_BOX} ${RING_BOX}`}>
               <defs>
                 <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#ff5c8a" />
                   <stop offset="100%" stopColor="#ffffff" />
                 </linearGradient>
               </defs>
-              <circle className="avatar-ring-track" cx="42" cy="42" r="38" />
-              <circle
+              <rect
+                className="avatar-ring-track"
+                x={RING_INSET}
+                y={RING_INSET}
+                width={RING_SIZE}
+                height={RING_SIZE}
+                rx={RING_RADIUS}
+              />
+              <rect
                 className="avatar-ring-fill"
-                cx="42"
-                cy="42"
-                r="38"
+                x={RING_INSET}
+                y={RING_INSET}
+                width={RING_SIZE}
+                height={RING_SIZE}
+                rx={RING_RADIUS}
                 strokeDasharray={ringCircumference}
                 strokeDashoffset={ringOffset}
               />
