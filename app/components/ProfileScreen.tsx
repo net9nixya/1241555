@@ -52,7 +52,15 @@ function hexWithAlpha(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-// Геометрия квадратной рамки-прогресса вокруг аватара (см. avatar-ring-wrap
+// Описания по умолчанию для встроенных бейджей (tone), которые показываются
+// в тултипе, если бэкенд не прислал своё badge.description.
+const DEFAULT_TONE_DESCRIPTIONS: Partial<Record<NonNullable<Badge["tone"]>, string>> = {
+  vip: "У этого игрока активен VIP-статус.",
+  dev: "Разработчик проекта.",
+  admin: "Администратор проекта.",
+  pink: "Особый статус игрока.",
+  purple: "Особый статус игрока.",
+};
 // в globals.css) — скруглённый квадрат вместо круга: 84×84 вьюбокс, сама
 // рамка чуть меньше (78×78) с отступом 3px под толщину обводки, rx задаёт
 // скругление углов ("гладкие углы", как в референсе).
@@ -336,6 +344,10 @@ function BadgePill({ badge, delay }: { badge: Badge; delay: number }) {
         {badge.label}
       </span>
     );
+  }
+
+  if (!badge.description && !badge.color && badge.tone) {
+    badge = { ...badge, description: DEFAULT_TONE_DESCRIPTIONS[badge.tone] };
   }
 
   if (!badge.description) return pill;
