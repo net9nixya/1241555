@@ -87,7 +87,7 @@ export default function ProfileScreen({
             <svg viewBox="0 0 84 84">
               <defs>
                 <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ff8fc4" />
+                  <stop offset="0%" stopColor="#ff5c8a" />
                   <stop offset="100%" stopColor="#ffffff" />
                 </linearGradient>
               </defs>
