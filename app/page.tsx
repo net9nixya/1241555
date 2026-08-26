@@ -23,7 +23,7 @@ const SHOW_REGISTER_GATE = true;
 // Ссылка на чат поддержки — по умолчанию тот же бот, что и для регистрации
 // (см. RegisterGate.tsx), если нужен отдельный аккаунт поддержки — задай
 // NEXT_PUBLIC_SUPPORT_LINK в Environment Variables на Vercel.
-const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/paranoya123";
+const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/Counterfaceit_bot";
 
 export default function Home() {
   const [p, setP] = useState<Profile | null>(null);
