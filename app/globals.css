@@ -16,7 +16,7 @@
   --muted: #868cA0;
   --muted-soft: #5c6175;
   --accent: #ff0055;
-  --accent-2: #a06bff;
+  --accent-2: #ff2f78;
   --accent-soft: rgba(255, 0, 85, 0.16);
   --mint: #4ef0c8;
   --mint-soft: rgba(78, 240, 200, 0.15);
@@ -24,8 +24,6 @@
   --coral-soft: rgba(255, 107, 107, 0.15);
   --gold: #ffc857;
   --gold-soft: rgba(255, 200, 87, 0.17);
-  --cyan: #4fd1e8;
-  --cyan-soft: rgba(79, 209, 232, 0.15);
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
@@ -106,7 +104,7 @@ button {
   right: -100px;
   width: 420px;
   height: 420px;
-  background: radial-gradient(circle, rgba(160, 107, 255, 0.45), rgba(160, 107, 255, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 47, 120, 0.45), rgba(255, 47, 120, 0) 70%);
   animation: glow-drift-b 18s ease-in-out infinite;
 }
 
@@ -138,7 +136,7 @@ button {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.35;
-  background: radial-gradient(circle, rgba(79, 209, 232, 0.4), rgba(79, 209, 232, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 70%);
 }
 
 .cf-wrap {
@@ -288,7 +286,7 @@ button {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 82% -20%, rgba(255, 0, 85, 0.28), transparent 55%),
-    radial-gradient(circle at -10% 120%, rgba(160, 107, 255, 0.18), transparent 50%);
+    radial-gradient(circle at -10% 120%, rgba(255, 47, 120, 0.18), transparent 50%);
   pointer-events: none;
 }
 
@@ -429,7 +427,7 @@ button {
 .badge-dev {
   background: var(--accent-soft);
   color: var(--accent);
-  border-color: rgba(124, 158, 255, 0.3);
+  border-color: rgba(255, 0, 85, 0.3);
 }
 
 .badge-admin {
@@ -445,9 +443,9 @@ button {
 }
 
 .badge-purple {
-  background: rgba(168, 122, 255, 0.14);
-  color: #a87aff;
-  border-color: rgba(168, 122, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* ---------- rank / level card ---------- */
@@ -557,7 +555,7 @@ button {
     box-shadow: 0 0 10px rgba(255, 0, 85, 0.55), 0 0 22px rgba(255, 0, 85, 0.28);
   }
   50% {
-    box-shadow: 0 0 16px rgba(255, 0, 85, 0.85), 0 0 34px rgba(160, 107, 255, 0.4);
+    box-shadow: 0 0 16px rgba(255, 0, 85, 0.85), 0 0 34px rgba(255, 47, 120, 0.4);
   }
 }
 
@@ -1486,7 +1484,7 @@ button {
   justify-content: center;
   padding: 24px;
   background: radial-gradient(circle at 20% 10%, rgba(255, 0, 85, 0.16), transparent 45%),
-    radial-gradient(circle at 85% 90%, rgba(160, 107, 255, 0.16), transparent 45%), var(--bg);
+    radial-gradient(circle at 85% 90%, rgba(255, 47, 120, 0.16), transparent 45%), var(--bg);
   text-align: center;
 }
 
