@@ -1275,22 +1275,6 @@ button {
   flex-shrink: 0;
 }
 
-.header-icon-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.icon-fab-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
 .header-title {
   flex: 1;
   min-width: 0;
