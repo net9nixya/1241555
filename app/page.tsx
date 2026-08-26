@@ -126,29 +126,24 @@ export default function Home() {
             <div className="header-row">
               {tab === "profile" ? (
                 <>
-                  <div className="header-icon-group reveal">
-                    <button
-                      type="button"
-                      className="icon-fab"
-                      onClick={() => setSettingsOpen(true)}
-                      aria-label="Настройки профиля"
-                    >
-                      <Settings size={18} />
-                    </button>
-                    <span className="icon-fab-label">Настройки</span>
-                  </div>
-                  <div className="header-icon-group reveal" style={{ animationDelay: "0.03s" }}>
-                    <a
-                      href={SUPPORT_LINK}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="icon-fab"
-                      aria-label="Поддержка"
-                    >
-                      <LifeBuoy size={18} />
-                    </a>
-                    <span className="icon-fab-label">Поддержка</span>
-                  </div>
+                  <button
+                    type="button"
+                    className="icon-fab reveal"
+                    onClick={() => setSettingsOpen(true)}
+                    aria-label="Настройки профиля"
+                  >
+                    <Settings size={18} />
+                  </button>
+                  <a
+                    href={SUPPORT_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="icon-fab reveal"
+                    style={{ animationDelay: "0.03s" }}
+                    aria-label="Поддержка"
+                  >
+                    <LifeBuoy size={18} />
+                  </a>
                   <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
                     Профиль
                   </span>
