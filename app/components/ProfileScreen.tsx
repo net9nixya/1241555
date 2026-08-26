@@ -119,7 +119,7 @@ export default function ProfileScreen({
             <div className="name-row">
               {x.nickname}
               {x.verified && (
-                <TooltipWrap description="Данный игрок верифицирован.">
+                <TooltipWrap description="Данный игрок верифицирован." placement="bottom">
                   <ShieldCheck size={17} className="verified-tick" />
                 </TooltipWrap>
               )}
