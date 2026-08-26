@@ -11,7 +11,7 @@ export const demoProfile: Profile = {
     { id: "dev", label: "Developer", tone: "dev" },
     { id: "admin", label: "Admin", tone: "admin" },
     { id: "femboy", label: "Фембой", tone: "pink" },
-    { id: "custom", label: "Developer", tone: "custom", color: "#4fd1e8", icon: "code", description: "Написал и поддерживает этот мини-апп" },
+    { id: "custom", label: "Developer", tone: "custom", color: "#ffffff", icon: "code", description: "Написал и поддерживает этот мини-апп" },
   ],
   banned: null,
   elo: 200,
