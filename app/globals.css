@@ -1666,6 +1666,32 @@ button {
   pointer-events: auto;
 }
 
+/* Вариант "вниз-влево" — для мест, где сверху/по центру всплывать некуда
+   (например, рядом с самым верхним краем карточки профиля): подсказка
+   раскрывается под элементом и прижата левым краем, а не центрируется,
+   чтобы не вылезать за левую границу карточки. */
+.badge-tooltip-below .badge-tooltip {
+  bottom: auto;
+  top: calc(100% + 8px);
+  left: 0;
+  transform: translateY(-4px);
+}
+
+.badge-tooltip-below .badge-tooltip::after {
+  top: auto;
+  bottom: 100%;
+  left: 14px;
+  transform: none;
+  border-top-color: transparent;
+  border-bottom-color: rgba(16, 14, 20, 0.96);
+}
+
+.badge-tooltip-wrap.badge-tooltip-below:hover .badge-tooltip,
+.badge-tooltip-wrap.badge-tooltip-below:focus-within .badge-tooltip,
+.badge-tooltip-wrap.badge-tooltip-below.badge-tooltip-open .badge-tooltip {
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .badge-tooltip {
     transition: opacity 0.15s ease;
