@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3, ArrowLeft, Search } from "lucide-react";
+import { Clock3, ArrowLeft, Search, Settings } from "lucide-react";
 import { getTelegramInitData } from "./lib/telegram";
 import type { Profile } from "./lib/types";
 import { demoProfile } from "./lib/demo";
@@ -119,7 +119,18 @@ export default function Home() {
         ) : (
           <>
             <div className="header-row">
-              <div style={{ flex: 1 }} />
+              {tab === "profile" ? (
+                <button
+                  type="button"
+                  className="icon-fab reveal"
+                  onClick={() => setSettingsOpen(true)}
+                  aria-label="Настройки профиля"
+                >
+                  <Settings size={18} />
+                </button>
+              ) : (
+                <span className="icon-fab-spacer" aria-hidden="true" />
+              )}
               <button
                 type="button"
                 className="icon-fab reveal"
@@ -137,7 +148,7 @@ export default function Home() {
               </div>
             )}
 
-            {tab === "profile" && <ProfileScreen profile={x} onOpenSettings={() => setSettingsOpen(true)} />}
+            {tab === "profile" && <ProfileScreen profile={x} />}
             {tab === "top" && <TopScreen selfNickname={x.nickname} onSelectPlayer={openPlayerProfile} />}
             {tab === "quests" && <QuestsScreen />}
             {tab === "shop" && <ShopScreen />}
