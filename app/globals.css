@@ -362,8 +362,8 @@ button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 150px;
-  height: 150px;
+  width: 165px;
+  height: 165px;
   transform: translate(-50%, -50%);
   object-fit: contain;
   pointer-events: none;
