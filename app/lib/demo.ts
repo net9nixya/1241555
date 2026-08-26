@@ -5,10 +5,9 @@ export const demoProfile: Profile = {
   gameId: "faceit",
   username: "paranoya123",
   avatarUrl: "/avatar3.jpg",
-  frameKey: "frame_oni",
+  frameKey: "frame_gold",
   badges: [
     { id: "vip", label: "VIP", tone: "vip" },
-    { id: "dev", label: "Developer", tone: "dev" },
     { id: "admin", label: "Admin", tone: "admin" },
     { id: "femboy", label: "Фембой", tone: "pink" },
     { id: "custom", label: "Developer", tone: "custom", color: "#ffffff", icon: "code", description: "Написал и поддерживает этот мини-апп" },
