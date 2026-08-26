@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ShieldCheck, Crown, Code2, Shield, Sparkles, Star, Heart, Flame, Zap, Gem, Trophy, type LucideIcon } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import { topBoards as demoTopBoards, TopBoard } from "../lib/demo";
+import TooltipWrap from "./Tooltip";
 
 // Тот же набор иконок кастомных бейджей, что и в ProfileScreen — ключи
 // приходят из БД бота (admin.py → BADGE_ICON_PRESETS).
@@ -89,7 +90,11 @@ export default function TopScreen({
                 <span className={`top-rank ${rankClass}`}>{place}</span>
                 <span className={`top-name ${isSelf ? "self" : ""}`}>
                   {entry.nickname}
-                  {entry.verified && <ShieldCheck size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />}
+                  {entry.verified && (
+                    <TooltipWrap description="Данный игрок верифицирован.">
+                      <ShieldCheck size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
+                    </TooltipWrap>
+                  )}
                   {entry.badges?.map((b, bi) => (
                     <TopBadge key={`${entry.nickname}-${bi}`} badge={b} />
                   ))}
