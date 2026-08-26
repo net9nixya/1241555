@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3, ArrowLeft, Search, Settings, LifeBuoy } from "lucide-react";
+import { Clock3, ArrowLeft, Search, Settings, BadgeQuestionMark } from "lucide-react";
 import { getTelegramInitData } from "./lib/telegram";
 import type { Profile } from "./lib/types";
 import { demoProfile } from "./lib/demo";
@@ -23,7 +23,7 @@ const SHOW_REGISTER_GATE = true;
 // Ссылка на чат поддержки — по умолчанию тот же бот, что и для регистрации
 // (см. RegisterGate.tsx), если нужен отдельный аккаунт поддержки — задай
 // NEXT_PUBLIC_SUPPORT_LINK в Environment Variables на Vercel.
-const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/Counterfaceit_bot";
+const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/paranoya123";
 
 export default function Home() {
   const [p, setP] = useState<Profile | null>(null);
@@ -142,7 +142,7 @@ export default function Home() {
                     style={{ animationDelay: "0.03s" }}
                     aria-label="Поддержка"
                   >
-                    <LifeBuoy size={18} />
+                    <BadgeQuestionMark size={18} />
                   </a>
                   <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
                     Профиль
