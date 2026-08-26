@@ -146,10 +146,12 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
               {x.badges?.map((b, i) => (
                 <BadgePill key={b.id} badge={b} delay={0.1 + i * 0.06} />
               ))}
-              <span className="badge" style={{ background: "rgba(255,255,255,.05)", color: "var(--muted)", animationDelay: "0.3s" }}>
-                <Gamepad2 size={12} />
-                {x.privatka || "Faceit"}
-              </span>
+              <TooltipWrap description={`Этот игрок играет на приватке «${x.privatka || "Faceit"}».`}>
+                <span className="badge" style={{ background: "rgba(255,255,255,.05)", color: "var(--muted)", animationDelay: "0.3s" }}>
+                  <Gamepad2 size={12} />
+                  {x.privatka || "Faceit"}
+                </span>
+              </TooltipWrap>
             </div>
           </div>
         </div>
