@@ -340,7 +340,7 @@ button {
 .avatar {
   position: absolute;
   inset: 8px;
-  border-radius: 999px;
+  border-radius: 19px;
   overflow: hidden;
   background: linear-gradient(145deg, #23273a, #14161d);
   border: 1px solid var(--border-strong);
@@ -1264,8 +1264,15 @@ button {
 .header-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin: 4px 0 20px;
+}
+
+.icon-fab-spacer {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
 }
 
 .header-row .brand-title {
@@ -1546,36 +1553,6 @@ button {
 
 .gate-btn:active {
   transform: translateY(0) scale(0.97);
-}
-
-/* ---------- settings gear (top-left of hero card) ---------- */
-
-.hero-settings-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 2;
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--muted);
-  cursor: pointer;
-  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, transform 0.15s ease;
-}
-
-.hero-settings-btn:hover {
-  color: var(--text);
-  border-color: rgba(255, 0, 85, 0.35);
-  background: rgba(255, 0, 85, 0.08);
-  transform: translateY(-1px);
-}
-
-.hero-settings-btn:active {
-  transform: translateY(0) scale(0.94);
 }
 
 /* ---------- ban mark ---------- */
