@@ -25,6 +25,15 @@ const SHOW_REGISTER_GATE = true;
 // NEXT_PUBLIC_SUPPORT_LINK в Environment Variables на Vercel.
 const SUPPORT_LINK = process.env.NEXT_PUBLIC_SUPPORT_LINK || "https://t.me/paranoya123";
 
+// Заголовок в шапке над контентом — подписи совпадают с TabBar.tsx.
+const TAB_TITLES: Record<Tab, string> = {
+  profile: "Профиль",
+  top: "Топ",
+  quests: "Задания",
+  shop: "Магазин",
+  play: "Играть",
+};
+
 export default function Home() {
   const [p, setP] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,33 +133,27 @@ export default function Home() {
         ) : (
           <>
             <div className="header-row">
-              {tab === "profile" ? (
-                <>
-                  <button
-                    type="button"
-                    className="icon-fab reveal"
-                    onClick={() => setSettingsOpen(true)}
-                    aria-label="Настройки профиля"
-                  >
-                    <Settings size={18} />
-                  </button>
-                  <a
-                    href={SUPPORT_LINK}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="icon-fab reveal"
-                    style={{ animationDelay: "0.03s" }}
-                    aria-label="Поддержка"
-                  >
-                    <BadgeHelp size={18} />
-                  </a>
-                  <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
-                    Профиль
-                  </span>
-                </>
-              ) : (
-                <span className="icon-fab-spacer" aria-hidden="true" />
-              )}
+              <button
+                type="button"
+                className="icon-fab reveal"
+                onClick={() => setSettingsOpen(true)}
+                aria-label="Настройки профиля"
+              >
+                <Settings size={18} />
+              </button>
+              <a
+                href={SUPPORT_LINK}
+                target="_blank"
+                rel="noreferrer"
+                className="icon-fab reveal"
+                style={{ animationDelay: "0.03s" }}
+                aria-label="Поддержка"
+              >
+                <BadgeHelp size={18} />
+              </a>
+              <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
+                {TAB_TITLES[tab]}
+              </span>
               <button
                 type="button"
                 className="icon-fab reveal"
