@@ -61,6 +61,17 @@ const DEFAULT_TONE_DESCRIPTIONS: Partial<Record<NonNullable<Badge["tone"]>, stri
   pink: "Особый статус игрока.",
   purple: "Особый статус игрока.",
 };
+
+// Бэкенд иногда присылает текст в Telegram HTML-разметке (например, карту
+// матча с премиум-эмодзи бота: `<tg-emoji emoji-id="...">🗺</tg-emoji> Hanami`).
+// Браузер такую разметку не парсит как HTML, поэтому вырезаем все теги и
+// оставляем только видимый текст/эмодзи внутри них.
+function stripTelegramHtml(text?: string | null): string {
+  if (!text) return "";
+  return text.replace(/<[^>]*>/g, "").trim();
+}
+
+// Геометрия квадратной рамки-прогресса вокруг аватара (см. avatar-ring-wrap
 // в globals.css) — скруглённый квадрат вместо круга: 84×84 вьюбокс, сама
 // рамка чуть меньше (78×78) с отступом 3px под толщину обводки, rx задаёт
 // скругление углов ("гладкие углы", как в референсе).
@@ -269,7 +280,7 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
                     {m.result === "win" ? "Победа" : m.result === "loss" ? "Поражение" : "В процессе"}
                   </div>
                   <div className="match-sub">
-                    {m.map || "Карта не указана"} · {m.mode || "Матч"} · {m.kills}/{m.assists}/{m.deaths}
+                    {stripTelegramHtml(m.map) || "Карта не указана"} · {stripTelegramHtml(m.mode) || "Матч"} · {m.kills}/{m.assists}/{m.deaths}
                   </div>
                 </div>
               </div>
