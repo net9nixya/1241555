@@ -75,10 +75,10 @@ function stripTelegramHtml(text?: string | null): string {
 // в globals.css) — скруглённый квадрат вместо круга: 84×84 вьюбокс, сама
 // рамка чуть меньше (78×78) с отступом 3px под толщину обводки, rx задаёт
 // скругление углов ("гладкие углы", как в референсе).
-const RING_BOX = 84;
-const RING_INSET = 3;
+const RING_BOX = 112;
+const RING_INSET = 4;
 const RING_SIZE = RING_BOX - RING_INSET * 2;
-const RING_RADIUS = 22;
+const RING_RADIUS = 29;
 
 export default function ProfileScreen({ profile }: { profile: Profile }) {
   const x = profile;
