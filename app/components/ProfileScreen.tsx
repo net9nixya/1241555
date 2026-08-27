@@ -20,6 +20,7 @@ import {
   Zap,
   Gem,
   Ban,
+  Gauge,
   type LucideIcon,
 } from "lucide-react";
 import type { Profile, Badge } from "../lib/types";
@@ -80,10 +81,35 @@ const RING_INSET = 4;
 const RING_SIZE = RING_BOX - RING_INSET * 2;
 const RING_RADIUS = 29;
 
+// Максимальный уровень в системе (см. admin.py бота / логику начисления
+// уровней на бэкенде) — выше него расти некуда, ELO дальше не считается
+// "до следующего уровня". Бэкенд иногда всё равно присылает nextLevel/needElo
+// даже для игрока на максимуме (например, "До уровня 11 осталось 0 ELO" при
+// level=10) — поэтому не полагаемся только на nextLevel и подстраховываемся
+// этой константой на фронте.
+const MAX_LEVEL = 10;
+
 export default function ProfileScreen({ profile }: { profile: Profile }) {
   const x = profile;
   const initials = x.nickname.slice(0, 2).toUpperCase();
-  const progressPct = x.nextLevel ? Math.max(6, Math.min(97, 100 - (x.needElo / 400) * 100)) : 100;
+
+  // На калибровке ELO/уровень ещё не считаются "по-настоящему" — вместо
+  // прогресса до следующего уровня показываем прогресс калибровочных
+  // матчей. Максимальный уровень проверяем сами (см. комментарий у
+  // MAX_LEVEL) и не показываем "до следующего уровня", даже если бэкенд
+  // прислал nextLevel/needElo.
+  const isCalibrating = !!x.calibration?.active;
+  const isMaxLevel = !isCalibrating && x.level >= MAX_LEVEL;
+  const showLevelProgress = !isCalibrating && !isMaxLevel && !!x.nextLevel;
+
+  const progressPct = isCalibrating
+    ? Math.max(6, Math.min(100, (x.calibration.played / Math.max(1, x.calibration.required)) * 100))
+    : isMaxLevel
+    ? 100
+    : showLevelProgress
+    ? Math.max(6, Math.min(97, 100 - (x.needElo / 400) * 100))
+    : 100;
+
   // Периметр скруглённого квадрата: две пары прямых сторон + четыре четверти
   // окружности радиуса RING_RADIUS в углах.
   const ringCircumference = 2 * (RING_SIZE - 2 * RING_RADIUS) * 2 + 2 * Math.PI * RING_RADIUS;
@@ -192,20 +218,41 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
         <div className="rank-info">
           <div className="rank-top-row">
             <span className="rank-title">Уровень {x.level}</span>
-            <span className="elo-pill tabular">
-              <Swords size={13} />
-              {x.elo} ELO
-            </span>
+            {isCalibrating ? (
+              <span className="elo-pill tabular elo-pill-calibration">
+                <Gauge size={13} />
+                Калибровка
+              </span>
+            ) : (
+              <span className="elo-pill tabular">
+                <Swords size={13} />
+                {x.elo} ELO
+              </span>
+            )}
           </div>
-          {x.nextLevel && (
+          {isCalibrating ? (
             <>
               <div className="rank-sub">
-                До уровня {x.nextLevel} осталось <b className="tabular">{x.needElo}</b> ELO
+                Сыграно <b className="tabular">{x.calibration.played}</b> из{" "}
+                <b className="tabular">{x.calibration.required}</b> калибровочных матчей
               </div>
               <div className="progress-track">
                 <span className="progress-fill" style={{ width: `${progressPct}%` }} />
               </div>
             </>
+          ) : isMaxLevel ? (
+            <div className="rank-sub">Достигнут максимальный уровень</div>
+          ) : (
+            showLevelProgress && (
+              <>
+                <div className="rank-sub">
+                  До уровня {x.nextLevel} осталось <b className="tabular">{x.needElo}</b> ELO
+                </div>
+                <div className="progress-track">
+                  <span className="progress-fill" style={{ width: `${progressPct}%` }} />
+                </div>
+              </>
+            )
           )}
         </div>
       </section>
