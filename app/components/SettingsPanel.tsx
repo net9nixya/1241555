@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, User, Hash, Ticket, Loader2, Sparkles, Ban } from "lucide-react";
+import { X, User, Hash, Ticket, Loader2, Sparkles, Ban, ImageIcon } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
@@ -47,6 +47,7 @@ export default function SettingsPanel({
   const [idState, setIdState] = useState<FieldState>(IDLE);
   const [promoState, setPromoState] = useState<FieldState>(IDLE);
   const [glowState, setGlowState] = useState<FieldState>(IDLE);
+  const [frameState, setFrameState] = useState<FieldState>(IDLE);
 
   // Черновик HEX в текстовом поле — независим от profile.glowColor, пока
   // игрок не нажмёт "Сохранить"/не выберет пресет/не откроет системный
@@ -118,6 +119,23 @@ export default function SettingsPanel({
       return;
     }
     applyGlowColor(normalized);
+  }
+
+  async function applyFrame(frameKey: string | null) {
+    setFrameState({ loading: true, message: "", ok: false });
+    try {
+      const r = await fetch("/api/settings/frame", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": getTelegramInitData() },
+        body: JSON.stringify({ frameKey }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data?.error || "Не удалось сменить рамку");
+      onProfileUpdated(data);
+      setFrameState({ loading: false, message: frameKey ? "Рамка надета!" : "Рамка снята", ok: true });
+    } catch (e: any) {
+      setFrameState({ loading: false, message: e.message || "Ошибка", ok: false });
+    }
   }
 
   async function submitPromo() {
@@ -215,6 +233,54 @@ export default function SettingsPanel({
               </button>
             </div>
             {promoState.message && <div className={`settings-feedback ${promoState.ok ? "ok" : "err"}`}>{promoState.message}</div>}
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-section-title">
+              <ImageIcon size={12} style={{ display: "inline", marginRight: 5, verticalAlign: -1 }} />
+              Рамки
+            </div>
+            {profile.frameInventory.length === 0 ? (
+              <div className="frame-inventory-empty">
+                Пока нет ни одной рамки — купите в Магазине или получите от администрации.
+              </div>
+            ) : (
+              <div className="frame-inventory-grid">
+                <button
+                  type="button"
+                  className={`frame-slot-btn ${!profile.frameKey ? "active" : ""}`}
+                  title="Без рамки"
+                  aria-label="Без рамки"
+                  disabled={frameState.loading}
+                  onClick={() => applyFrame(null)}
+                >
+                  <Ban size={18} className="frame-slot-none" />
+                </button>
+                {profile.frameInventory.map((frameKey) => (
+                  <button
+                    key={frameKey}
+                    type="button"
+                    className={`frame-slot-btn ${profile.frameKey === frameKey ? "active" : ""}`}
+                    title={frameKey}
+                    aria-label={frameKey}
+                    disabled={frameState.loading}
+                    onClick={() => applyFrame(frameKey)}
+                  >
+                    <span className="frame-slot-preview">
+                      <span className="frame-slot-preview-photo">
+                        {profile.avatarUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={profile.avatarUrl} alt="" />
+                        ) : null}
+                      </span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img className="frame-slot-preview-deco" src={`/frames/${frameKey}.png`} alt="" aria-hidden="true" />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {frameState.message && <div className={`settings-feedback ${frameState.ok ? "ok" : "err"}`}>{frameState.message}</div>}
           </div>
 
           <div className="settings-section">
