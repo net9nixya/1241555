@@ -6,6 +6,8 @@ export const demoProfile: Profile = {
   username: "paranoya123",
   avatarUrl: "/avatar3.jpg",
   frameKey: "frame_gold",
+  frameInventory: ["frame_gold", "frame_void"],
+  coins: 730,
   glowColor: null,
   staticId: 5053,
   badges: [
@@ -151,9 +153,14 @@ export type ShopItem = {
   id: string;
   title: string;
   description: string;
-  priceRub: number;
-  priceStars: number;
+  // Цена в Counter Coin — единственная валюта магазина.
+  price: number;
   durationText?: string;
+  // Рамки в магазине показываются с превью на аватарке игрока (см.
+  // ShopScreen.tsx) — этот флаг отличает их от обычных товаров (VIP,
+  // Разбан), у которых такого превью нет.
+  isFrame?: boolean;
+  frameKey?: string;
 };
 
 export const shopItems: ShopItem[] = [
@@ -161,15 +168,29 @@ export const shopItems: ShopItem[] = [
     id: "vip",
     title: "VIP статус",
     description: "Множитель ELO x1.1 за победы. Выделяет ник короной во всех топах и профиле.",
-    priceRub: 20,
-    priceStars: 15,
+    price: 500,
     durationText: "1 месяц",
   },
   {
     id: "unban",
     title: "Разбан",
     description: "Снятие бана с аккаунта на Faceit.",
-    priceRub: 50,
-    priceStars: 25,
+    price: 1000,
+  },
+  {
+    id: "frame_void",
+    title: "Рамка «Войд»",
+    description: "Тёмная рамка аватара с эффектом пустоты.",
+    price: 199,
+    isFrame: true,
+    frameKey: "frame_void",
+  },
+  {
+    id: "frame_cyber",
+    title: "Рамка «Кибер»",
+    description: "Неоновая кибер-рамка аватара.",
+    price: 249,
+    isFrame: true,
+    frameKey: "frame_cyber",
   },
 ];
