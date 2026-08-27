@@ -154,6 +154,12 @@ export default function Home() {
               <span className="header-title reveal" style={{ animationDelay: "0.06s" }}>
                 {TAB_TITLES[tab]}
               </span>
+              {tab === "shop" && (
+                <span className="coin-balance-pill reveal" style={{ animationDelay: "0.05s" }}>
+                  <img src="/counter-coin.png" alt="" aria-hidden="true" />
+                  {x.coins}
+                </span>
+              )}
               <button
                 type="button"
                 className="icon-fab reveal"
@@ -174,7 +180,7 @@ export default function Home() {
             {tab === "profile" && <ProfileScreen profile={x} />}
             {tab === "top" && <TopScreen selfNickname={x.nickname} onSelectPlayer={openPlayerProfile} />}
             {tab === "quests" && <QuestsScreen />}
-            {tab === "shop" && <ShopScreen />}
+            {tab === "shop" && <ShopScreen profile={x} onProfileUpdated={(updated) => setP(updated)} />}
             {tab === "play" && <PlayScreen />}
           </>
         )}
