@@ -278,13 +278,13 @@ button {
 .hero {
   position: relative;
   padding: 26px 22px;
-  overflow: hidden;
 }
 
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: 20px;
   background: radial-gradient(circle at 82% -20%, rgba(255, 0, 85, 0.28), transparent 55%),
     radial-gradient(circle at -10% 120%, rgba(255, 47, 120, 0.18), transparent 50%);
   pointer-events: none;
@@ -367,20 +367,18 @@ button {
    "окна" под фото), поэтому размер тега нельзя ставить равным размеру
    фото — тогда рамка окажется мельче или крупнее нужного.
    Померено по альфа-каналу frame_gold.png: прозрачное окно под аватар
-   занимает ≈66.8% от стороны файла, т.е. сам файл нужно рисовать в
-   1 / 0.668 ≈ 1.497 раза крупнее видимого фото аватара, чтобы окно
-   легло ровно по краю фото. Аватар сейчас 92×92 (112px рамка − 2×10px
-   inset) → 92 × 1.497 ≈ 138px. Если размер аватара (.avatar-ring-wrap /
-   .avatar inset) изменится, домножай по этой же формуле, а не подбирай
-   на глаз. Фиксированные px (а не %) + object-fit: contain — чтобы рамку
-   не тянуло по высоте, даже если родитель ведёт себя неожиданно во
-   flex-контексте. */
+   занимает ≈66.8% от стороны файла, т.е. для точной посадки по краю фото
+   (92×92) файл должен быть 92 / 0.668 ≈ 138px. Тут — 140px (+2px сверх
+   точного расчёта), чтобы рамка чуть перекрывала пиксельную границу
+   фото, а не заканчивалась ровно на ней (иначе на некоторых аватарках
+   виден стык/зубчики по краю). Если размер аватара изменится — сначала
+   пересчитай точный размер по формуле, потом уже добавляй 1-2px запаса. */
 .avatar-frame-deco {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 138px;
-  height: 138px;
+  width: 140px;
+  height: 140px;
   transform: translate(-50%, -50%);
   object-fit: contain;
   pointer-events: none;
@@ -1823,4 +1821,59 @@ button {
   white-space: pre-wrap;
   word-break: break-all;
   margin: 0;
+}
+
+/* ---------- mobile: компактная карточка профиля ---------- */
+/* На узких экранах (телефон) hero-карточка с текущими паддингами и
+   112px-аватаром выглядит слишком "жирной" — съедает много вертикального
+   пространства до полезного контента. Пропорционально уменьшаем всё
+   вместе: паддинги карточки, аватар, рамку (по той же формуле подгонки,
+   что и в комментарии к .avatar-frame-deco выше — просто с новым
+   размером аватара) и шрифты имени/хэндла. */
+@media (max-width: 420px) {
+  .cf-wrap {
+    padding: 16px 12px 40px;
+  }
+
+  .brand-title {
+    font-size: 26px;
+    margin: 2px 0 16px;
+  }
+
+  .hero {
+    padding: 18px 16px;
+  }
+
+  .hero-top {
+    gap: 14px;
+  }
+
+  .avatar-ring-wrap {
+    width: 88px;
+    height: 88px;
+  }
+
+  .avatar {
+    inset: 8px;
+    border-radius: 20px;
+  }
+
+  /* 72×72 видимое фото (88 − 2×8) × 1.497 ≈ 108px, см. формулу в
+     комментарии к .avatar-frame-deco. */
+  .avatar-frame-deco {
+    width: 108px;
+    height: 108px;
+  }
+
+  .name-row {
+    font-size: 19px;
+  }
+
+  .handle {
+    font-size: 12.5px;
+  }
+
+  .badge-row {
+    margin-top: 9px;
+  }
 }
