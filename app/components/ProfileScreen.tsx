@@ -97,35 +97,37 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
       <section className="card hero reveal" style={{ animationDelay: "0.02s" }}>
         <div className="hero-top">
           <div
-            className="avatar-ring-wrap"
+            className={`avatar-ring-wrap${x.frameKey ? " avatar-ring-wrap-framed" : ""}`}
             style={{ "--ring-circumference": ringCircumference, "--ring-offset": ringOffset } as React.CSSProperties}
           >
-            <svg viewBox={`0 0 ${RING_BOX} ${RING_BOX}`}>
-              <defs>
-                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ff5c8a" />
-                  <stop offset="100%" stopColor="#ffffff" />
-                </linearGradient>
-              </defs>
-              <rect
-                className="avatar-ring-track"
-                x={RING_INSET}
-                y={RING_INSET}
-                width={RING_SIZE}
-                height={RING_SIZE}
-                rx={RING_RADIUS}
-              />
-              <rect
-                className="avatar-ring-fill"
-                x={RING_INSET}
-                y={RING_INSET}
-                width={RING_SIZE}
-                height={RING_SIZE}
-                rx={RING_RADIUS}
-                strokeDasharray={ringCircumference}
-                strokeDashoffset={ringOffset}
-              />
-            </svg>
+            {!x.frameKey && (
+              <svg viewBox={`0 0 ${RING_BOX} ${RING_BOX}`}>
+                <defs>
+                  <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ff5c8a" />
+                    <stop offset="100%" stopColor="#ffffff" />
+                  </linearGradient>
+                </defs>
+                <rect
+                  className="avatar-ring-track"
+                  x={RING_INSET}
+                  y={RING_INSET}
+                  width={RING_SIZE}
+                  height={RING_SIZE}
+                  rx={RING_RADIUS}
+                />
+                <rect
+                  className="avatar-ring-fill"
+                  x={RING_INSET}
+                  y={RING_INSET}
+                  width={RING_SIZE}
+                  height={RING_SIZE}
+                  rx={RING_RADIUS}
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={ringOffset}
+                />
+              </svg>
+            )}
             <div className="avatar">
               {x.avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
