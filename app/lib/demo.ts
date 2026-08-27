@@ -7,6 +7,7 @@ export const demoProfile: Profile = {
   avatarUrl: "/avatar3.jpg",
   frameKey: "frame_gold",
   glowColor: null,
+  staticId: 5053,
   badges: [
     { id: "vip", label: "VIP", tone: "vip" },
     { id: "admin", label: "Admin", tone: "admin" },
