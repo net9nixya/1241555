@@ -6,6 +6,7 @@ export const demoProfile: Profile = {
   username: "paranoya123",
   avatarUrl: "/avatar3.jpg",
   frameKey: "frame_gold",
+  glowColor: null,
   badges: [
     { id: "vip", label: "VIP", tone: "vip" },
     { id: "admin", label: "Admin", tone: "admin" },
