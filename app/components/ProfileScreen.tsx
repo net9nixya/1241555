@@ -199,8 +199,16 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
               )}
             </div>
             <div className="handle">
-              {x.gameId}
-              {x.username && ` · @${x.username}`}
+              {x.staticId != null ? (
+                <>
+                  STATIC #{x.staticId} · ID {x.gameId}
+                </>
+              ) : (
+                <>
+                  {x.gameId}
+                  {x.username && ` · @${x.username}`}
+                </>
+              )}
             </div>
             <div className="badge-row">
               {x.badges?.map((b, i) => (
