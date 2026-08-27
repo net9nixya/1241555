@@ -530,6 +530,16 @@ button {
   flex-shrink: 0;
 }
 
+/* Игрок ещё не откалиброван — ELO пока не показателен, поэтому пилюля
+   намеренно другого цвета (золотой, не акцентный розовый), чтобы не
+   читалась как обычное значение ELO. */
+.elo-pill-calibration {
+  background: var(--gold-soft);
+  color: var(--gold);
+  border-color: rgba(255, 200, 87, 0.35);
+  box-shadow: 0 0 14px rgba(255, 200, 87, 0.2);
+}
+
 .rank-sub {
   font-size: 12.5px;
   color: var(--muted);
