@@ -317,6 +317,13 @@ button {
   filter: drop-shadow(0 0 14px rgba(255, 0, 85, 0.35));
 }
 
+/* Когда надета рамка — кольцо прогресса ELO не рисуется (см. ProfileScreen.tsx),
+   поэтому убираем и его розовое свечение: рамка светится сама по себе через
+   .avatar-frame-deco. */
+.avatar-ring-wrap-framed {
+  filter: none;
+}
+
 .avatar-ring-wrap svg {
   position: absolute;
   inset: 0;
