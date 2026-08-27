@@ -53,6 +53,17 @@ function hexWithAlpha(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+// "#rrggbb" -> "r, g, b", формат, ожидаемый CSS-переменной --glow-color в
+// globals.css (используется внутри rgba(var(--glow-color), alpha)).
+function hexToRgbTriplet(hex: string): string {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const r = parseInt(h.slice(0, 2), 16) || 0;
+  const g = parseInt(h.slice(2, 4), 16) || 0;
+  const b = parseInt(h.slice(4, 6), 16) || 0;
+  return `${r}, ${g}, ${b}`;
+}
+
 // Описания по умолчанию для встроенных бейджей (tone), которые показываются
 // в тултипе, если бэкенд не прислал своё badge.description.
 const DEFAULT_TONE_DESCRIPTIONS: Partial<Record<NonNullable<Badge["tone"]>, string>> = {
@@ -120,7 +131,17 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
       <h1 className="brand-title reveal">Counter Faceit</h1>
 
       {/* hero */}
-      <section className="card hero reveal" style={{ animationDelay: "0.02s" }}>
+      {/* Цвет свечения выбирается игроком в настройках (SettingsPanel →
+          глава "Свечение профиля") и виден всем, кто открывает этот профиль
+          — не только владельцу. x.glowColor === null означает "свечение
+          отключено", тогда добавляем .hero-no-glow (см. globals.css). */}
+      <section
+        className={`card hero reveal${x.glowColor ? "" : " hero-no-glow"}`}
+        style={{
+          animationDelay: "0.02s",
+          ...(x.glowColor ? ({ "--glow-color": hexToRgbTriplet(x.glowColor) } as React.CSSProperties) : {}),
+        }}
+      >
         <div className="hero-top">
           <div
             className={`avatar-ring-wrap${x.frameKey ? " avatar-ring-wrap-framed" : ""}`}
