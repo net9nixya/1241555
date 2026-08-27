@@ -49,6 +49,11 @@ export type Profile = {
   // Ключ рамки аватара (см. AVATAR_FRAME_PRESETS в admin.py бота), картинка
   // берётся из /frames/<frameKey>.png. null — рамка не выдана.
   frameKey: string | null;
+  // Цвет свечения hero-карточки профиля (аватар + фон карточки), выбирается
+  // самим игроком в настройках мини-аппа — HEX-строка вида "#ff2f78".
+  // null — свечение отключено игроком. Видно всем, кто открывает этот
+  // профиль (свой профиль, клик по игроку в топе, поиск).
+  glowColor: string | null;
   banned?: BanInfo | null;
   badges: Badge[];
   elo: number;
