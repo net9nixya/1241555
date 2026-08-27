@@ -1,12 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { X, User, Hash, Ticket, Loader2, Stethoscope, ChevronDown } from "lucide-react";
+import { X, User, Hash, Ticket, Loader2, Sparkles, Ban } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
 type FieldState = { loading: boolean; message: string; ok: boolean };
 const IDLE: FieldState = { loading: false, message: "", ok: false };
+
+// Готовая палитра для быстрого выбора — фирменный розовый (цвет по
+// умолчанию) первым, дальше нейтральный белый (как просили в задаче) и
+// ещё несколько контрастных тонов, которые хорошо видно на тёмном фоне
+// карточки. Свободный HEX ниже покрывает всё остальное.
+const GLOW_PRESETS = [
+  { hex: "#ff0055", label: "Розовый" },
+  { hex: "#ffffff", label: "Белый" },
+  { hex: "#4ef0c8", label: "Мятный" },
+  { hex: "#ffc857", label: "Золотой" },
+  { hex: "#6c8bff", label: "Синий" },
+  { hex: "#b76cff", label: "Фиолетовый" },
+  { hex: "#ff6b6b", label: "Коралловый" },
+] as const;
+
+const HEX_RE = /^#?[0-9a-fA-F]{6}$/;
+
+function normalizeHex(v: string): string | null {
+  const trimmed = v.trim();
+  if (!HEX_RE.test(trimmed)) return null;
+  return trimmed.startsWith("#") ? trimmed.toLowerCase() : `#${trimmed.toLowerCase()}`;
+}
 
 export default function SettingsPanel({
   profile,
@@ -24,23 +46,12 @@ export default function SettingsPanel({
   const [nickState, setNickState] = useState<FieldState>(IDLE);
   const [idState, setIdState] = useState<FieldState>(IDLE);
   const [promoState, setPromoState] = useState<FieldState>(IDLE);
+  const [glowState, setGlowState] = useState<FieldState>(IDLE);
 
-  const [debugOpen, setDebugOpen] = useState(false);
-  const [debugLoading, setDebugLoading] = useState(false);
-  const [debugResult, setDebugResult] = useState<any>(null);
-
-  async function runDebug() {
-    setDebugOpen(true);
-    setDebugLoading(true);
-    try {
-      const r = await fetch("/api/debug");
-      setDebugResult(await r.json());
-    } catch (e: any) {
-      setDebugResult({ error: e.message || "Не удалось запустить диагностику" });
-    } finally {
-      setDebugLoading(false);
-    }
-  }
+  // Черновик HEX в текстовом поле — независим от profile.glowColor, пока
+  // игрок не нажмёт "Сохранить"/не выберет пресет/не откроет системный
+  // пикер (те применяются сразу, без промежуточного черновика).
+  const [hexDraft, setHexDraft] = useState(profile.glowColor || "");
 
   async function submitNickname() {
     const value = nickname.trim();
@@ -80,6 +91,33 @@ export default function SettingsPanel({
     } catch (e: any) {
       setIdState({ loading: false, message: e.message || "Ошибка", ok: false });
     }
+  }
+
+  async function applyGlowColor(hex: string | null) {
+    setGlowState({ loading: true, message: "", ok: false });
+    try {
+      const r = await fetch("/api/settings/glowcolor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": getTelegramInitData() },
+        body: JSON.stringify({ color: hex }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data?.error || "Не удалось изменить свечение");
+      onProfileUpdated(data);
+      setHexDraft(hex || "");
+      setGlowState({ loading: false, message: hex ? "Свечение обновлено!" : "Свечение отключено", ok: true });
+    } catch (e: any) {
+      setGlowState({ loading: false, message: e.message || "Ошибка", ok: false });
+    }
+  }
+
+  function submitGlowHex() {
+    const normalized = normalizeHex(hexDraft);
+    if (!normalized) {
+      setGlowState({ loading: false, message: "Введите цвет в формате #RRGGBB", ok: false });
+      return;
+    }
+    applyGlowColor(normalized);
   }
 
   async function submitPromo() {
@@ -180,20 +218,80 @@ export default function SettingsPanel({
           </div>
 
           <div className="settings-section">
-            <button type="button" className="debug-toggle-btn" onClick={runDebug}>
-              <Stethoscope size={13} />
-              Диагностика подключения
-              <ChevronDown size={13} style={{ marginLeft: "auto", transform: debugOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }} />
-            </button>
-            {debugOpen && (
-              <div className="debug-output">
-                {debugLoading ? (
-                  <span>Проверяю…</span>
-                ) : (
-                  <pre>{JSON.stringify(debugResult, null, 2)}</pre>
-                )}
-              </div>
-            )}
+            <div className="settings-section-title">
+              <Sparkles size={12} style={{ display: "inline", marginRight: 5, verticalAlign: -1 }} />
+              Свечение профиля
+            </div>
+            <div className="glow-current-row">
+              <span
+                className={`glow-current-swatch ${profile.glowColor ? "" : "is-off"}`}
+                style={
+                  profile.glowColor
+                    ? ({ background: profile.glowColor, "--glow-swatch-shadow": profile.glowColor } as React.CSSProperties)
+                    : undefined
+                }
+              />
+              <span className="glow-current-text">
+                {profile.glowColor ? `Сейчас: ${profile.glowColor}` : "Сейчас: свечение отключено"}
+              </span>
+            </div>
+
+            <div className="glow-swatch-grid">
+              {GLOW_PRESETS.map((p) => (
+                <button
+                  key={p.hex}
+                  type="button"
+                  className={`glow-swatch-btn ${profile.glowColor?.toLowerCase() === p.hex ? "active" : ""}`}
+                  style={{ background: p.hex }}
+                  title={p.label}
+                  aria-label={p.label}
+                  disabled={glowState.loading}
+                  onClick={() => applyGlowColor(p.hex)}
+                />
+              ))}
+              <button
+                type="button"
+                className={`glow-swatch-btn glow-swatch-btn-off ${!profile.glowColor ? "active" : ""}`}
+                title="Без свечения"
+                aria-label="Без свечения"
+                disabled={glowState.loading}
+                onClick={() => applyGlowColor(null)}
+              >
+                <Ban size={14} />
+              </button>
+            </div>
+
+            <div className="glow-custom-row">
+              <label
+                className="glow-color-native-swatch"
+                style={
+                  {
+                    "--glow-picker-preview": hexDraft && normalizeHex(hexDraft) ? normalizeHex(hexDraft) : "transparent",
+                    "--glow-picker-has-color": hexDraft && normalizeHex(hexDraft) ? 1 : 0,
+                  } as React.CSSProperties
+                }
+              >
+                <input
+                  type="color"
+                  className="glow-color-native"
+                  value={normalizeHex(hexDraft) || "#ff0055"}
+                  onChange={(e) => applyGlowColor(e.target.value)}
+                  aria-label="Выбрать произвольный цвет"
+                />
+              </label>
+              <input
+                className="glow-hex-input"
+                placeholder="#RRGGBB"
+                value={hexDraft}
+                onChange={(e) => setHexDraft(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && submitGlowHex()}
+                maxLength={7}
+              />
+              <button type="button" className="settings-submit-btn" onClick={submitGlowHex} disabled={glowState.loading}>
+                {glowState.loading ? <Loader2 size={14} className="spin" /> : "OK"}
+              </button>
+            </div>
+            {glowState.message && <div className={`settings-feedback ${glowState.ok ? "ok" : "err"}`}>{glowState.message}</div>}
           </div>
         </div>
       </div>
