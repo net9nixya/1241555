@@ -134,14 +134,26 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
       {/* Цвет свечения выбирается игроком в настройках (SettingsPanel →
           глава "Свечение профиля") и виден всем, кто открывает этот профиль
           — не только владельцу. x.glowColor === null означает "свечение
-          отключено", тогда добавляем .hero-no-glow (см. globals.css). */}
+          отключено", тогда добавляем .hero-no-glow (см. globals.css).
+          Баннер (x.bannerKey) — картинка-фон карточки, выдаётся только
+          админом (см. BANNER_PRESETS в admin.py), надевается/снимается в
+          настройках из своего инвентаря. Обрезается по краям самой
+          карточки — .hero-banner-img лежит внутри .hero, у которого уже
+          есть border-radius + overflow:hidden. Свечение остаётся поверх
+          баннера (см. .hero-banner z-index в globals.css). */}
       <section
-        className={`card hero reveal${x.glowColor ? "" : " hero-no-glow"}`}
+        className={`card hero reveal${x.glowColor ? "" : " hero-no-glow"}${x.bannerKey ? " hero-has-banner" : ""}`}
         style={{
           animationDelay: "0.02s",
           ...(x.glowColor ? ({ "--glow-color": hexToRgbTriplet(x.glowColor) } as React.CSSProperties) : {}),
         }}
       >
+        {x.bannerKey && (
+          <div className="hero-banner" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="hero-banner-img" src={`/banners/${x.bannerKey}.jpg`} alt="" />
+          </div>
+        )}
         <div className="hero-top">
           <div
             className={`avatar-ring-wrap${x.frameKey ? " avatar-ring-wrap-framed" : ""}`}
