@@ -303,14 +303,14 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
         Статистика
       </div>
       <div className="stat-grid">
-        <Stat icon={<Trophy size={16} />} value={x.wins} label="Побед" delay={0.16} />
+        <Stat icon={<Trophy size={16} />} value={x.wins} label="Побед" delay={0.16} tone="gold" />
         <Stat icon={<Target size={16} />} value={`${x.winrate.toFixed(1)}%`} label="Winrate" delay={0.19} />
-        <Stat icon={<BarChart3 size={16} />} value={x.kd.toFixed(2)} label="K/D" delay={0.22} />
-        <Stat icon={<Flame size={16} />} value={x.winStreak} label="Серия побед" delay={0.25} />
+        <Stat icon={<BarChart3 size={16} />} value={x.kd.toFixed(2)} label="K/D" delay={0.22} tone="mint" />
+        <Stat icon={<Flame size={16} />} value={x.winStreak} label="Серия побед" delay={0.25} tone="coral" />
         <Stat icon={<Swords size={16} />} value={x.kills} label="Убийства" delay={0.28} />
-        <Stat icon={<HeartHandshake size={16} />} value={x.assists} label="Ассисты" delay={0.31} />
-        <Stat icon={<UserRound size={16} />} value={x.deaths} label="Смерти" delay={0.34} />
-        <Stat icon={<ShieldCheck size={16} />} value={x.trustFactor} label="Trust Factor" delay={0.37} />
+        <Stat icon={<HeartHandshake size={16} />} value={x.assists} label="Ассисты" delay={0.31} tone="mint" />
+        <Stat icon={<UserRound size={16} />} value={x.deaths} label="Смерти" delay={0.34} tone="coral" />
+        <Stat icon={<ShieldCheck size={16} />} value={x.trustFactor} label="Trust Factor" delay={0.37} tone="gold" />
       </div>
 
       {/* result */}
@@ -394,10 +394,25 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
   );
 }
 
-function Stat({ icon, value, label, delay }: { icon: React.ReactNode; value: React.ReactNode; label: string; delay: number }) {
+function Stat({
+  icon,
+  value,
+  label,
+  delay,
+  tone,
+}: {
+  icon: React.ReactNode;
+  value: React.ReactNode;
+  label: string;
+  delay: number;
+  // Необязательный цветовой акцент иконки (gold/mint/coral) — только
+  // оформление, см. .stat-icon[data-tone] в globals.css. Без tone иконка
+  // остаётся дефолтного акцентного (розового) цвета, как и раньше.
+  tone?: "gold" | "mint" | "coral";
+}) {
   return (
     <section className="card stat-card reveal" style={{ animationDelay: `${delay}s` }}>
-      <div className="stat-icon">{icon}</div>
+      <div className="stat-icon" data-tone={tone}>{icon}</div>
       <span className="stat-value tabular" style={{ animationDelay: `${delay + 0.1}s` }}>
         {value}
       </span>
