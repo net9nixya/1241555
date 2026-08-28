@@ -901,8 +901,12 @@ button {
 
 /* ---------- bottom tab nav ---------- */
 
+/* Полноширинный бар, "приклеенный" к нижнему краю экрана, со скруглением
+   только верхних углов — как в референсе (там панель идёт от края до края,
+   без отступов/плавающей "таблетки"). На широких экранах ограничиваем той
+   же шириной, что и остальной контент (.cf-wrap), и центрируем. */
 .tabbar-spacer {
-  height: 78px;
+  height: 82px;
 }
 
 .tabbar {
@@ -913,7 +917,6 @@ button {
   z-index: 40;
   display: flex;
   justify-content: center;
-  padding: 0 12px calc(10px + env(safe-area-inset-bottom, 0px));
   pointer-events: none;
 }
 
@@ -922,13 +925,13 @@ button {
   width: min(720px, 100%);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 2px;
-  padding: 7px;
-  border-radius: 20px;
-  background: rgba(20, 17, 26, 0.78);
-  border: 1px solid var(--border-strong);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 85, 0.08);
+  padding: 10px 6px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-radius: 22px 22px 0 0;
+  background: rgba(11, 10, 15, 0.94);
+  border-top: 1px solid var(--border-strong);
+  box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
 }
@@ -939,8 +942,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 4px;
+  gap: 5px;
+  padding: 6px 4px;
   border: none;
   background: transparent;
   color: var(--muted);
@@ -960,7 +963,7 @@ button {
 }
 
 .tab-btn.active {
-  color: var(--text);
+  color: var(--accent);
 }
 
 .tab-btn.active svg {
@@ -971,7 +974,7 @@ button {
 
 .tab-btn-indicator {
   position: absolute;
-  top: 2px;
+  top: -4px;
   width: 22px;
   height: 3px;
   border-radius: 999px;
@@ -1507,14 +1510,30 @@ button {
 /* ---------- quests ---------- */
 
 .quest-item {
+  position: relative;
   padding: 16px 18px;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 14px;
+  overflow: hidden;
+}
+
+.quest-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 100% 0%, rgba(255, 0, 85, 0.14), transparent 60%);
+}
+
+.quest-item.quest-item-done::before {
+  background: radial-gradient(circle at 100% 0%, rgba(78, 240, 200, 0.16), transparent 60%);
 }
 
 .quest-icon {
+  position: relative;
+  z-index: 1;
   width: 38px;
   height: 38px;
   border-radius: 12px;
@@ -1531,6 +1550,8 @@ button {
 }
 
 .quest-body {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-width: 0;
 }
@@ -1562,7 +1583,14 @@ button {
   box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
 }
 
+.quest-item-done .quest-progress-fill {
+  background: linear-gradient(90deg, var(--mint), #a4ffe4);
+  box-shadow: 0 0 8px rgba(78, 240, 200, 0.5);
+}
+
 .quest-reward {
+  position: relative;
+  z-index: 1;
   flex-shrink: 0;
   font-family: var(--font-display);
   font-weight: 800;
@@ -1576,11 +1604,41 @@ button {
 /* ---------- placeholder screen ---------- */
 
 .placeholder-card {
+  position: relative;
   padding: 40px 24px;
   text-align: center;
+  overflow: hidden;
+}
+
+.placeholder-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% -10%, rgba(255, 0, 85, 0.22), transparent 55%);
+}
+
+.placeholder-badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 0, 85, 0.35);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 18px;
 }
 
 .placeholder-icon {
+  position: relative;
+  z-index: 1;
   width: 56px;
   height: 56px;
   border-radius: 16px;
@@ -1593,6 +1651,8 @@ button {
 }
 
 .placeholder-title {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 17px;
@@ -1600,6 +1660,8 @@ button {
 }
 
 .placeholder-sub {
+  position: relative;
+  z-index: 1;
   font-size: 13px;
   color: var(--muted);
   max-width: 320px;
