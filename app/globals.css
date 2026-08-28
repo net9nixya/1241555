@@ -321,8 +321,21 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  /* Исходники баннеров (см. banner_skulls.jpg) обычно "весят" сюжетом в
+     правой части картинки, а .hero — широкая, но невысокая карточка, так
+     что при object-position:center в кадр попадала в основном пустая левая
+     половина, а самое интересное (черепа и т.п.) обрезалось справа. Сдвигаем
+     точку фокуса ближе к правому краю, чтобы сюжет банера был виден. На
+     узких мобильных экранах карточка ещё уже относительно баннера — там
+     дожимаем до самого края (см. медиа-запрос ниже). */
+  object-position: 88% center;
   display: block;
+}
+
+@media (max-width: 480px) {
+  .hero-banner-img {
+    object-position: 100% center;
+  }
 }
 
 /* Когда баннер надет — чуть притемняем сам .card-градиент карточки поверх
@@ -1123,116 +1136,119 @@ button {
   margin: 2px 4px 16px;
 }
 
-.shop-item {
-  padding: 20px;
-  margin-bottom: 12px;
+/* Главный товар (VIP) — крупная промо-карточка сверху, как большие карточки
+   с ценником и кнопкой "В корзину" в референсе: бейдж цены сверху, иконка,
+   заголовок/описание, большая кнопка на всю ширину. Только оформление —
+   покупка всё так же идёт через POST /api/shop/buy, никакой "корзины" нет. */
+.shop-featured {
+  position: relative;
+  padding: 22px 20px 20px;
+  margin-bottom: 18px;
+  overflow: hidden;
 }
 
-.shop-item-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.shop-featured::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% -10%, rgba(255, 200, 87, 0.35), transparent 55%),
+    radial-gradient(circle at -10% 120%, rgba(255, 200, 87, 0.14), transparent 50%);
+  pointer-events: none;
 }
 
-.shop-item-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: var(--accent-soft);
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.shop-item-title {
-  font-family: var(--font-display);
-  font-size: 16.5px;
-  font-weight: 800;
-}
-
-.shop-item-duration {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.shop-item-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border: 1px solid rgba(255, 143, 196, 0.3);
-  padding: 4px 9px;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-.shop-item-desc {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 9px 0 16px;
-  line-height: 1.5;
-}
-
-.shop-item-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.shop-price {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.shop-price b {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 800;
+.shop-featured-badge {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  background: var(--gold-soft);
+  border: 1px solid rgba(255, 200, 87, 0.35);
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
 }
 
-.shop-price b img {
-  width: 16px;
-  height: 16px;
+.shop-featured-badge img {
+  width: 15px;
+  height: 15px;
 }
 
-.shop-price span {
+.shop-featured-icon {
+  position: relative;
+  z-index: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(255, 200, 87, 0.35), rgba(255, 200, 87, 0.08));
+  color: var(--gold);
+  margin-bottom: 14px;
+  box-shadow: 0 10px 24px rgba(255, 200, 87, 0.18);
+}
+
+.shop-featured-title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.shop-featured-desc {
+  position: relative;
+  z-index: 1;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 6px;
+}
+
+.shop-featured-duration {
+  position: relative;
+  z-index: 1;
+  display: block;
   font-size: 11.5px;
   color: var(--muted-soft);
+  margin-bottom: 14px;
 }
 
-.shop-buy-btn {
+.shop-featured-buy {
+  position: relative;
+  z-index: 1;
+  width: 100%;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   border: none;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1a0f14;
-  background: linear-gradient(90deg, var(--accent-2), var(--accent), #ffffff);
-  box-shadow: 0 4px 20px rgba(255, 0, 85, 0.35);
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #241505;
+  background: linear-gradient(90deg, var(--gold), #ffe1a0);
+  box-shadow: 0 10px 26px rgba(255, 200, 87, 0.3);
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease, box-shadow 0.2s ease;
 }
 
-.shop-buy-btn:hover {
+.shop-featured-buy:hover {
   transform: translateY(-1px);
   filter: brightness(1.05);
 }
 
-.shop-buy-btn:active {
+.shop-featured-buy:active {
   transform: translateY(0) scale(0.97);
 }
 
-.shop-buy-btn:disabled {
+.shop-featured-buy:disabled {
   opacity: 0.5;
   cursor: default;
   transform: none;
@@ -1240,16 +1256,171 @@ button {
   filter: none;
 }
 
-.shop-buy-btn.owned {
+/* Остальные товары (разбан, рамки) — компактные строки с цветным акцентом
+   слева и ценой/кнопкой справа, тот же язык, что и у карточек-категорий в
+   референсе, но без выдуманных разделов, которых нет в боте. */
+.shop-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.shop-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.shop-row[data-tone="gold"]::before {
+  background: radial-gradient(circle at 100% 0%, rgba(255, 200, 87, 0.16), transparent 60%);
+}
+
+.shop-row[data-tone="mint"]::before {
+  background: radial-gradient(circle at 100% 0%, rgba(78, 240, 200, 0.16), transparent 60%);
+}
+
+.shop-row[data-tone="pink"]::before {
+  background: radial-gradient(circle at 100% 0%, rgba(255, 0, 85, 0.16), transparent 60%);
+}
+
+.shop-row-icon {
+  position: relative;
+  z-index: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.shop-row[data-tone="gold"] .shop-row-icon {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.shop-row[data-tone="mint"] .shop-row-icon {
+  background: var(--mint-soft);
+  color: var(--mint);
+}
+
+.shop-row-body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.shop-row-title {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shop-row-desc {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.shop-row-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-top: 6px;
+  color: var(--accent);
+}
+
+.shop-row-price img {
+  width: 13px;
+  height: 13px;
+}
+
+.shop-row[data-tone="gold"] .shop-row-price {
+  color: var(--gold);
+}
+
+.shop-row[data-tone="mint"] .shop-row-price {
+  color: var(--mint);
+}
+
+.shop-row-price-warn {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.shop-row-cta {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 15px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1a0f14;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+}
+
+.shop-row[data-tone="gold"] .shop-row-cta {
+  background: linear-gradient(90deg, var(--gold), #ffe1a0);
+}
+
+.shop-row[data-tone="mint"] .shop-row-cta {
+  background: linear-gradient(90deg, var(--mint), #a4ffe4);
+  color: #04231b;
+}
+
+.shop-row-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.shop-row-cta:active {
+  transform: translateY(0) scale(0.95);
+}
+
+.shop-row-cta:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+  filter: none;
+}
+
+.shop-row-cta.owned {
   background: rgba(255, 255, 255, 0.06);
   color: var(--muted);
-  box-shadow: none;
 }
 
 .shop-item-error {
+  position: relative;
+  z-index: 1;
   font-size: 12px;
   color: var(--coral);
   margin-top: 8px;
+  flex-basis: 100%;
 }
 
 /* Заголовок с балансом Counter Coin в шапке мини-аппа — виден только во
@@ -1291,12 +1462,13 @@ button {
 
 /* ---------- рамки в магазине (превью на аватарке) ---------- */
 
-.shop-frame-item .shop-item-head {
-  align-items: flex-start;
-}
-
+/* Используется как .shop-row-icon для товаров-рамок — своя превьюшка
+   (аватар + декор рамки) вместо обычной lucide-иконки, но та же роль в
+   строке (см. .shop-row в ShopScreen.tsx), поэтому z-index/flex-shrink
+   такие же, как у .shop-row-icon. */
 .shop-frame-preview {
   position: relative;
+  z-index: 1;
   width: 64px;
   height: 64px;
   flex-shrink: 0;
