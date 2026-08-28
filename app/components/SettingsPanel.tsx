@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, User, Hash, Ticket, Loader2, Sparkles, Ban, ImageIcon } from "lucide-react";
+import { X, User, Hash, Ticket, Loader2, Sparkles, Ban, ImageIcon, GalleryHorizontal } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
@@ -48,6 +48,7 @@ export default function SettingsPanel({
   const [promoState, setPromoState] = useState<FieldState>(IDLE);
   const [glowState, setGlowState] = useState<FieldState>(IDLE);
   const [frameState, setFrameState] = useState<FieldState>(IDLE);
+  const [bannerState, setBannerState] = useState<FieldState>(IDLE);
 
   // Черновик HEX в текстовом поле — независим от profile.glowColor, пока
   // игрок не нажмёт "Сохранить"/не выберет пресет/не откроет системный
@@ -135,6 +136,23 @@ export default function SettingsPanel({
       setFrameState({ loading: false, message: frameKey ? "Рамка надета!" : "Рамка снята", ok: true });
     } catch (e: any) {
       setFrameState({ loading: false, message: e.message || "Ошибка", ok: false });
+    }
+  }
+
+  async function applyBanner(bannerKey: string | null) {
+    setBannerState({ loading: true, message: "", ok: false });
+    try {
+      const r = await fetch("/api/settings/banner", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": getTelegramInitData() },
+        body: JSON.stringify({ bannerKey }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data?.error || "Не удалось сменить баннер");
+      onProfileUpdated(data);
+      setBannerState({ loading: false, message: bannerKey ? "Баннер надет!" : "Баннер снят", ok: true });
+    } catch (e: any) {
+      setBannerState({ loading: false, message: e.message || "Ошибка", ok: false });
     }
   }
 
@@ -281,6 +299,43 @@ export default function SettingsPanel({
               </div>
             )}
             {frameState.message && <div className={`settings-feedback ${frameState.ok ? "ok" : "err"}`}>{frameState.message}</div>}
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-section-title">
+              <GalleryHorizontal size={12} style={{ display: "inline", marginRight: 5, verticalAlign: -1 }} />
+              Баннеры
+            </div>
+            {profile.bannerInventory.length === 0 ? (
+              <div className="frame-inventory-empty">
+                Пока нет ни одного баннера — их выдаёт администрация.
+              </div>
+            ) : (
+              <div className="banner-inventory-list">
+                <button
+                  type="button"
+                  className={`banner-slot-btn banner-slot-btn-none ${!profile.bannerKey ? "active" : ""}`}
+                  disabled={bannerState.loading}
+                  onClick={() => applyBanner(null)}
+                >
+                  <Ban size={16} />
+                  Без баннера
+                </button>
+                {profile.bannerInventory.map((bannerKey) => (
+                  <button
+                    key={bannerKey}
+                    type="button"
+                    className={`banner-slot-btn ${profile.bannerKey === bannerKey ? "active" : ""}`}
+                    disabled={bannerState.loading}
+                    onClick={() => applyBanner(bannerKey)}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img className="banner-slot-preview" src={`/banners/${bannerKey}.jpg`} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
+            {bannerState.message && <div className={`settings-feedback ${bannerState.ok ? "ok" : "err"}`}>{bannerState.message}</div>}
           </div>
 
           <div className="settings-section">
