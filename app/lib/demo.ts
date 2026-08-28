@@ -7,6 +7,8 @@ export const demoProfile: Profile = {
   avatarUrl: "/avatar3.jpg",
   frameKey: "frame_gold",
   frameInventory: ["frame_gold", "frame_void"],
+  bannerKey: "banner_skulls",
+  bannerInventory: ["banner_skulls"],
   coins: 730,
   glowColor: null,
   staticId: 5053,
