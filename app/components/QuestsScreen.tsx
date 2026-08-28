@@ -73,7 +73,7 @@ function QuestCard({
   const done = q.done ?? q.progress >= q.target;
   const pct = Math.max(0, Math.min(100, (q.progress / q.target) * 100));
   return (
-    <section className="card quest-item reveal" style={{ animationDelay: `${delay}s` }}>
+    <section className={`card quest-item reveal${done ? " quest-item-done" : ""}`} style={{ animationDelay: `${delay}s` }}>
       <span className={`quest-icon ${done ? "done" : ""}`}>{done ? <Check size={17} /> : iconFor(q.metric)}</span>
       <div className="quest-body">
         <div className="quest-title">{q.title}</div>
