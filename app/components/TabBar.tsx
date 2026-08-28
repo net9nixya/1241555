@@ -1,13 +1,13 @@
 "use client";
 
-import { Trophy, ListChecks, Play, ShoppingBag, UserRound } from "lucide-react";
+import { Trophy, ListChecks, Crosshair, ShoppingBag, UserRound } from "lucide-react";
 
 export type Tab = "top" | "quests" | "play" | "shop" | "profile";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "top", label: "Топ", icon: <Trophy size={20} /> },
   { id: "quests", label: "Задания", icon: <ListChecks size={20} /> },
-  { id: "play", label: "Играть", icon: <Play size={20} /> },
+  { id: "play", label: "Играть", icon: <Crosshair size={20} /> },
   { id: "shop", label: "Магазин", icon: <ShoppingBag size={20} /> },
   { id: "profile", label: "Профиль", icon: <UserRound size={20} /> },
 ];
