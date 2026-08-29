@@ -5,7 +5,7 @@ export const demoProfile: Profile = {
   gameId: "faceit",
   username: "paranoya123",
   avatarUrl: "/avatar3.jpg",
-  frameKey: "frame_gold",
+  frameKey: "frame_angel",
   frameInventory: ["frame_gold", "frame_void"],
   bannerKey: "banner_skulls",
   bannerInventory: ["banner_skulls"],
@@ -19,6 +19,7 @@ export const demoProfile: Profile = {
     { id: "custom", label: "Developer", tone: "custom", color: "#ffffff", icon: "code", description: "Написал и поддерживает этот мини-апп" },
   ],
   banned: null,
+  devVerified: true,
   elo: 200,
   wins: 0,
   losses: 4,
@@ -110,6 +111,9 @@ export type TopEntry = {
   nickname: string;
   value: string;
   verified: boolean;
+  // Вторая "верификация" только для мини-аппа (иконка </>), выдаётся
+  // командой бота /dev — см. types.ts Profile.devVerified.
+  devVerified?: boolean;
   // Кастомные бейджи, выданные через админ-панель бота (может быть несколько).
   badges?: { label: string; color: string; icon: string | null }[];
 };
@@ -124,7 +128,7 @@ export const topBoards: TopBoard[] = [
       { nickname: "nomercy", value: "2894 эло", verified: true },
       { nickname: "ktzone", value: "2710 эло", verified: false },
       { nickname: "reverze", value: "2655 эло", verified: false },
-      { nickname: "weralow", value: "2140 эло", verified: true },
+      { nickname: "weralow", value: "2140 эло", verified: true, devVerified: true },
     ],
   },
   {
@@ -134,7 +138,7 @@ export const topBoards: TopBoard[] = [
       { nickname: "onetap", value: "2.31 КД", verified: true },
       { nickname: "clutchgod", value: "2.02 КД", verified: false },
       { nickname: "silentx", value: "1.94 КД", verified: true },
-      { nickname: "weralow", value: "1.34 КД", verified: true },
+      { nickname: "weralow", value: "1.34 КД", verified: true, devVerified: true },
       { nickname: "drift", value: "1.28 КД", verified: false },
     ],
   },
@@ -144,7 +148,7 @@ export const topBoards: TopBoard[] = [
     entries: [
       { nickname: "veteranop", value: "412 побед", verified: true },
       { nickname: "grindmode", value: "388 побед", verified: false },
-      { nickname: "weralow", value: "187 побед", verified: true },
+      { nickname: "weralow", value: "187 побед", verified: true, devVerified: true },
       { nickname: "casualcs", value: "150 побед", verified: false },
       { nickname: "newblood", value: "94 победы", verified: false },
     ],
