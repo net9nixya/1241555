@@ -94,6 +94,11 @@ export type Profile = {
   warns: number;
   vip: boolean;
   verified: boolean;
+  // Вторая, отдельная от verified "верификация" — только для мини-аппа
+  // (в самом боте тегом не показывается). Выдаётся командой бота
+  // /dev <telegram_id>. Рисуется как иконка </> рядом с ником и должна
+  // стоять ПЕРЕД обычной галочкой verified, если у игрока есть обе.
+  devVerified?: boolean;
   level: number;
   nextLevel: number | null;
   needElo: number;
