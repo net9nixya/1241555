@@ -204,6 +204,11 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
           <div className="identity">
             <div className="name-row">
               {x.nickname}
+              {x.devVerified && (
+                <TooltipWrap description="Разработчик Counter Faceit." placement="bottom">
+                  <Code2 size={17} className="dev-tick" />
+                </TooltipWrap>
+              )}
               {x.verified && (
                 <TooltipWrap description="Данный игрок верифицирован." placement="bottom">
                   <ShieldCheck size={17} className="verified-tick" />
