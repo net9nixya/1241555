@@ -73,17 +73,19 @@ export default function TopScreen({
                 onClick={() => onSelectPlayer(entry.nickname)}
               >
                 <span className={`top-rank ${rankClass}`}>{place}</span>
-                <span className={`top-name ${isSelf ? "self" : ""}`}>{entry.nickname}</span>
-                {entry.devVerified && (
-                  <TooltipWrap description="Разработчик Counter Faceit.">
-                    <Code2 size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
-                  </TooltipWrap>
-                )}
-                {entry.verified && (
-                  <TooltipWrap description="Данный игрок верифицирован.">
-                    <ShieldCheck size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
-                  </TooltipWrap>
-                )}
+                <span className={`top-name ${isSelf ? "self" : ""}`}>
+                  <span className="top-name-text">{entry.nickname}</span>
+                  {entry.devVerified && (
+                    <TooltipWrap description="Разработчик Counter Faceit.">
+                      <Code2 size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
+                    </TooltipWrap>
+                  )}
+                  {entry.verified && (
+                    <TooltipWrap description="Данный игрок верифицирован.">
+                      <ShieldCheck size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
+                    </TooltipWrap>
+                  )}
+                </span>
                 <span className="top-value tabular">{entry.value}</span>
               </button>
             );
