@@ -12,6 +12,7 @@ import {
   Gamepad2,
   UserRound,
   Code2,
+  BadgeCheck,
   Crown,
   Heart,
   Star,
@@ -203,10 +204,15 @@ export default function ProfileScreen({ profile }: { profile: Profile }) {
 
           <div className="identity">
             <div className="name-row">
-              {x.nickname}
+              <span style={x.nickColor ? { color: x.nickColor } : undefined}>{x.nickname}</span>
               {x.devVerified && (
                 <TooltipWrap description="Разработчик Counter Faceit." placement="bottom">
                   <Code2 size={17} className="dev-tick" />
+                </TooltipWrap>
+              )}
+              {x.paidVerified && (
+                <TooltipWrap description="Покупная верификация." placement="bottom">
+                  <BadgeCheck size={17} className="paid-tick" />
                 </TooltipWrap>
               )}
               {x.verified && (
