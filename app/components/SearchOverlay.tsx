@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Search, X, ShieldCheck, Code2, UserSearch, UserX, ChevronRight } from "lucide-react";
+import { Search, X, ShieldCheck, Code2, BadgeCheck, UserSearch, UserX, ChevronRight } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
 // Небольшой тип для одной строки результата поиска — используем сам Profile,
 // т.к. /api/profile/[nickname] отдаёт полный профиль, но показываем только
 // самое важное (ник, ELO, verified), полный профиль открывается по клику.
-type SearchHit = Pick<Profile, "nickname" | "gameId" | "avatarUrl" | "elo" | "verified" | "devVerified">;
+type SearchHit = Pick<
+  Profile,
+  "nickname" | "gameId" | "avatarUrl" | "elo" | "verified" | "devVerified" | "paidVerified" | "nickColor"
+>;
 
 export default function SearchOverlay({
   onClose,
@@ -159,8 +162,9 @@ export default function SearchOverlay({
               </span>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span className="search-result-name">
-                  {hit.nickname}
+                  <span style={hit.nickColor ? { color: hit.nickColor } : undefined}>{hit.nickname}</span>
                   {hit.devVerified && <Code2 size={13} style={{ color: "var(--dev-blue)", flexShrink: 0 }} />}
+                  {hit.paidVerified && <BadgeCheck size={13} style={{ color: "var(--paid-red)", flexShrink: 0 }} />}
                   {hit.verified && <ShieldCheck size={13} style={{ color: "var(--accent)", flexShrink: 0 }} />}
                 </span>
                 <span className="search-result-sub">
