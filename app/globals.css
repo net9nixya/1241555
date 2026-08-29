@@ -483,6 +483,11 @@ a {
   flex-shrink: 0;
 }
 
+.dev-tick {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
 .handle {
   font-size: 13px;
   color: var(--muted);
