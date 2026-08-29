@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Code2 } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import { topBoards as demoTopBoards, TopBoard } from "../lib/demo";
 import TooltipWrap from "./Tooltip";
@@ -74,6 +74,11 @@ export default function TopScreen({
               >
                 <span className={`top-rank ${rankClass}`}>{place}</span>
                 <span className={`top-name ${isSelf ? "self" : ""}`}>{entry.nickname}</span>
+                {entry.devVerified && (
+                  <TooltipWrap description="Разработчик Counter Faceit.">
+                    <Code2 size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
+                  </TooltipWrap>
+                )}
                 {entry.verified && (
                   <TooltipWrap description="Данный игрок верифицирован.">
                     <ShieldCheck size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
