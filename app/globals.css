@@ -34,6 +34,7 @@
   --accent-2: #ff8fc2;
   --accent-soft: rgba(255, 47, 120, 0.16);
   --accent-ink: #2b0313;
+  --dev-blue: #4da3ff;
 
   /* ---- смысловые цвета статистики ---- */
   --mint: #5eeacb;
@@ -484,7 +485,7 @@ a {
 }
 
 .dev-tick {
-  color: var(--accent);
+  color: var(--dev-blue);
   flex-shrink: 0;
 }
 
