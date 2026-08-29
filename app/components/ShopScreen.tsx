@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Crown, ShieldCheck, Wallet, Check } from "lucide-react";
-import { shopItems, ShopItem } from "../lib/demo";
+import { Crown, ShieldCheck, Wallet, Check, Palette, BadgeCheck } from "lucide-react";
+import { shopItems, ShopItem, ShopCategory } from "../lib/demo";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
@@ -18,6 +18,13 @@ const ROW_TONE: Record<string, "mint" | "pink"> = {
   frame_cyber: "pink",
 };
 
+const CATEGORY_TABS: { id: ShopCategory; label: string }[] = [
+  { id: "general", label: "Общее" },
+  { id: "frames", label: "Рамки" },
+  { id: "nickColors", label: "Цвет ника" },
+  { id: "verification", label: "Верификация" },
+];
+
 export default function ShopScreen({
   profile,
   onProfileUpdated,
@@ -26,6 +33,7 @@ export default function ShopScreen({
   onProfileUpdated: (p: Profile) => void;
 }) {
   const [states, setStates] = useState<Record<string, ItemState>>({});
+  const [category, setCategory] = useState<ShopCategory>("general");
 
   async function buy(itemId: string) {
     setStates((s) => ({ ...s, [itemId]: { loading: true, error: "" } }));
@@ -44,13 +52,12 @@ export default function ShopScreen({
     }
   }
 
-  // VIP — самый заметный товар, выносим его отдельной промо-карточкой
-  // сверху (как крупные карточки с ценником в референсе), остальное —
-  // компактным списком ниже. Сами товары и цены те же, что и раньше
-  // (shopItems из lib/demo.ts) — меняется только то, как это разложено по
-  // экрану.
-  const featured = shopItems.find((i) => i.id === "vip");
-  const rest = shopItems.filter((i) => i.id !== "vip");
+  // VIP — самый заметный товар вкладки "Общее", выносим его отдельной
+  // промо-карточкой сверху (как крупные карточки с ценником в референсе),
+  // остальное на этой вкладке — компактным списком ниже.
+  const categoryItems = shopItems.filter((i) => i.category === category);
+  const featured = category === "general" ? categoryItems.find((i) => i.id === "vip") : undefined;
+  const rest = featured ? categoryItems.filter((i) => i.id !== featured.id) : categoryItems;
 
   return (
     <>
@@ -59,6 +66,19 @@ export default function ShopScreen({
       <p className="shop-intro reveal" style={{ animationDelay: "0.03s" }}>
         Оплата Counter Coin. Пополнить баланс можно у администрации.
       </p>
+
+      <div className="top-tabs reveal" style={{ animationDelay: "0.05s" }}>
+        {CATEGORY_TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            className={`top-tab ${t.id === category ? "active" : ""}`}
+            onClick={() => setCategory(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
       {featured && (
         <FeaturedItem
@@ -69,28 +89,37 @@ export default function ShopScreen({
         />
       )}
 
-      <div className="section-title reveal" style={{ animationDelay: "0.14s" }}>
-        Товары
-      </div>
-
-      {rest.map((item, i) => {
-        const owned = item.isFrame && item.frameKey ? profile.frameInventory.includes(item.frameKey) : false;
-        return (
-          <ShopRow
-            key={item.id}
-            item={item}
-            profile={profile}
-            owned={owned}
-            canAfford={profile.coins >= item.price}
-            state={states[item.id] || IDLE}
-            onBuy={() => buy(item.id)}
-            delay={0.18 + i * 0.05}
-          />
-        );
-      })}
+      {rest.length === 0 ? (
+        <div className="empty-hint" style={{ padding: "14px 0" }}>
+          В этой вкладке пока пусто.
+        </div>
+      ) : (
+        rest.map((item, i) => {
+          const owned =
+            item.isFrame && item.frameKey
+              ? profile.frameInventory.includes(item.frameKey)
+              : item.isNickColor && item.colorKey
+              ? profile.nickColorInventory.includes(item.colorKey)
+              : item.id === "paid_verify"
+              ? !!profile.paidVerified
+              : false;
+          return (
+            <ShopRow
+              key={item.id}
+              item={item}
+              profile={profile}
+              owned={owned}
+              canAfford={profile.coins >= item.price}
+              state={states[item.id] || IDLE}
+              onBuy={() => buy(item.id)}
+              delay={0.1 + i * 0.05}
+            />
+          );
+        })
+      )}
 
       <div className="footer reveal" style={{ animationDelay: "0.4s" }}>
-        Купленные рамки надеваются в настройках профиля
+        Купленные рамки и цвет ника надеваются в настройках профиля
       </div>
     </>
   );
@@ -108,7 +137,7 @@ function FeaturedItem({
   onBuy: () => void;
 }) {
   return (
-    <section className="card shop-featured reveal" style={{ animationDelay: "0.06s" }}>
+    <section className="card shop-featured reveal" style={{ animationDelay: "0.08s" }}>
       <span className="shop-featured-badge">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/counter-coin.png" alt="" aria-hidden="true" />
@@ -169,6 +198,14 @@ function ShopRow({
           </span>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="shop-frame-preview-deco" src={`/frames/${item.frameKey}.png`} alt="" aria-hidden="true" />
+        </span>
+      ) : item.isNickColor && item.colorHex ? (
+        <span className="shop-row-icon" style={{ background: `${item.colorHex}26`, color: item.colorHex }}>
+          <Palette size={20} />
+        </span>
+      ) : item.id === "paid_verify" ? (
+        <span className="shop-row-icon" style={{ background: "rgba(255, 77, 79, 0.15)", color: "#ff4d4f" }}>
+          <BadgeCheck size={20} />
         </span>
       ) : (
         <span className="shop-row-icon">
