@@ -37,6 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: { nickname: st
     nickname: foundEntry.nickname,
     username: foundEntry.nickname,
     verified: foundEntry.verified,
+    devVerified: foundEntry.devVerified ?? false,
     frameKey: null,
     badges: [],
     medals: [],
