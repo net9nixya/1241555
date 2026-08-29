@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, User, Hash, Ticket, Loader2, Sparkles, Ban, ImageIcon, GalleryHorizontal } from "lucide-react";
+import { X, User, Hash, Ticket, Loader2, Sparkles, Ban, ImageIcon, GalleryHorizontal, Palette } from "lucide-react";
 import { getTelegramInitData } from "../lib/telegram";
 import type { Profile } from "../lib/types";
 
@@ -23,6 +23,15 @@ const GLOW_PRESETS = [
 ] as const;
 
 const HEX_RE = /^#?[0-9a-fA-F]{6}$/;
+
+// Соответствует NICK_COLOR_PRESETS в database.py — ключ инвентаря → HEX и
+// подпись для UI выбора цвета ника в настройках.
+const NICK_COLOR_PRESETS: Record<string, { hex: string; label: string }> = {
+  pink: { hex: "#ff2f78", label: "Розовый" },
+  blue: { hex: "#4da3ff", label: "Синий" },
+  green: { hex: "#3ddc84", label: "Зелёный" },
+  red: { hex: "#ff4d4f", label: "Красный" },
+};
 
 function normalizeHex(v: string): string | null {
   const trimmed = v.trim();
@@ -49,6 +58,7 @@ export default function SettingsPanel({
   const [glowState, setGlowState] = useState<FieldState>(IDLE);
   const [frameState, setFrameState] = useState<FieldState>(IDLE);
   const [bannerState, setBannerState] = useState<FieldState>(IDLE);
+  const [nickColorState, setNickColorState] = useState<FieldState>(IDLE);
 
   // Черновик HEX в текстовом поле — независим от profile.glowColor, пока
   // игрок не нажмёт "Сохранить"/не выберет пресет/не откроет системный
@@ -153,6 +163,23 @@ export default function SettingsPanel({
       setBannerState({ loading: false, message: bannerKey ? "Баннер надет!" : "Баннер снят", ok: true });
     } catch (e: any) {
       setBannerState({ loading: false, message: e.message || "Ошибка", ok: false });
+    }
+  }
+
+  async function applyNickColor(colorKey: string | null) {
+    setNickColorState({ loading: true, message: "", ok: false });
+    try {
+      const r = await fetch("/api/settings/nickcolor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": getTelegramInitData() },
+        body: JSON.stringify({ colorKey }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data?.error || "Не удалось сменить цвет ника");
+      onProfileUpdated(data);
+      setNickColorState({ loading: false, message: colorKey ? "Цвет ника применён!" : "Цвет ника сброшен", ok: true });
+    } catch (e: any) {
+      setNickColorState({ loading: false, message: e.message || "Ошибка", ok: false });
     }
   }
 
@@ -336,6 +363,50 @@ export default function SettingsPanel({
               </div>
             )}
             {bannerState.message && <div className={`settings-feedback ${bannerState.ok ? "ok" : "err"}`}>{bannerState.message}</div>}
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-section-title">
+              <Palette size={12} style={{ display: "inline", marginRight: 5, verticalAlign: -1 }} />
+              Цвет ника
+            </div>
+            {profile.nickColorInventory.length === 0 ? (
+              <div className="frame-inventory-empty">
+                Пока нет ни одного цвета — купите в Магазине, вкладка «Цвет ника».
+              </div>
+            ) : (
+              <div className="glow-swatch-grid">
+                {profile.nickColorInventory.map((colorKey) => {
+                  const preset = NICK_COLOR_PRESETS[colorKey];
+                  if (!preset) return null;
+                  return (
+                    <button
+                      key={colorKey}
+                      type="button"
+                      className={`glow-swatch-btn ${profile.nickColor?.toLowerCase() === preset.hex ? "active" : ""}`}
+                      style={{ background: preset.hex }}
+                      title={preset.label}
+                      aria-label={preset.label}
+                      disabled={nickColorState.loading}
+                      onClick={() => applyNickColor(colorKey)}
+                    />
+                  );
+                })}
+                <button
+                  type="button"
+                  className={`glow-swatch-btn glow-swatch-btn-off ${!profile.nickColor ? "active" : ""}`}
+                  title="Без цвета"
+                  aria-label="Без цвета"
+                  disabled={nickColorState.loading}
+                  onClick={() => applyNickColor(null)}
+                >
+                  <Ban size={14} />
+                </button>
+              </div>
+            )}
+            {nickColorState.message && (
+              <div className={`settings-feedback ${nickColorState.ok ? "ok" : "err"}`}>{nickColorState.message}</div>
+            )}
           </div>
 
           <div className="settings-section">
