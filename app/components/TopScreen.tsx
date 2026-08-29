@@ -77,7 +77,7 @@ export default function TopScreen({
                   <span className="top-name-text">{entry.nickname}</span>
                   {entry.devVerified && (
                     <TooltipWrap description="Разработчик Counter Faceit.">
-                      <Code2 size={13} style={{ flexShrink: 0, color: "var(--accent)" }} />
+                      <Code2 size={13} style={{ flexShrink: 0, color: "var(--dev-blue)" }} />
                     </TooltipWrap>
                   )}
                   {entry.verified && (
