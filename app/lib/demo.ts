@@ -5,10 +5,12 @@ export const demoProfile: Profile = {
   gameId: "faceit",
   username: "paranoya123",
   avatarUrl: "/avatar3.jpg",
-  frameKey: "frame_angel",
+  frameKey: "frame_gold",
   frameInventory: ["frame_gold", "frame_void"],
   bannerKey: "banner_skulls",
   bannerInventory: ["banner_skulls"],
+  nickColor: "#4da3ff",
+  nickColorInventory: ["blue"],
   coins: 730,
   glowColor: null,
   staticId: 5053,
@@ -20,6 +22,7 @@ export const demoProfile: Profile = {
   ],
   banned: null,
   devVerified: true,
+  paidVerified: false,
   elo: 200,
   wins: 0,
   losses: 4,
@@ -114,6 +117,10 @@ export type TopEntry = {
   // Вторая "верификация" только для мини-аппа (иконка </>), выдаётся
   // командой бота /dev — см. types.ts Profile.devVerified.
   devVerified?: boolean;
+  // Покупная верификация (красная иконка) — см. types.ts Profile.paidVerified.
+  paidVerified?: boolean;
+  // HEX цвета ника, если куплен и надет — см. types.ts Profile.nickColor.
+  nickColor?: string | null;
   // Кастомные бейджи, выданные через админ-панель бота (может быть несколько).
   badges?: { label: string; color: string; icon: string | null }[];
 };
@@ -155,6 +162,8 @@ export const topBoards: TopBoard[] = [
   },
 ];
 
+export type ShopCategory = "general" | "frames" | "nickColors" | "verification";
+
 export type ShopItem = {
   id: string;
   title: string;
@@ -162,11 +171,20 @@ export type ShopItem = {
   // Цена в Counter Coin — единственная валюта магазина.
   price: number;
   durationText?: string;
+  // Вкладка магазина, в которой лежит товар (см. ShopScreen.tsx) —
+  // "general" (VIP, Разбан) идёт отдельной промо-карточкой + списком,
+  // остальные — по своим вкладкам.
+  category: ShopCategory;
   // Рамки в магазине показываются с превью на аватарке игрока (см.
   // ShopScreen.tsx) — этот флаг отличает их от обычных товаров (VIP,
   // Разбан), у которых такого превью нет.
   isFrame?: boolean;
   frameKey?: string;
+  // Цвет ника в магазине показывается кружком-превью этого HEX (см.
+  // ShopScreen.tsx) — только для category === "nickColors".
+  isNickColor?: boolean;
+  colorKey?: string;
+  colorHex?: string;
 };
 
 export const shopItems: ShopItem[] = [
@@ -176,18 +194,21 @@ export const shopItems: ShopItem[] = [
     description: "Множитель ELO x1.1 за победы. Выделяет ник короной во всех топах и профиле.",
     price: 500,
     durationText: "1 месяц",
+    category: "general",
   },
   {
     id: "unban",
     title: "Разбан",
     description: "Снятие бана с аккаунта на Faceit.",
     price: 1000,
+    category: "general",
   },
   {
     id: "frame_void",
     title: "Рамка «Войд»",
     description: "Тёмная рамка аватара с эффектом пустоты.",
     price: 199,
+    category: "frames",
     isFrame: true,
     frameKey: "frame_void",
   },
@@ -196,7 +217,55 @@ export const shopItems: ShopItem[] = [
     title: "Рамка «Кибер»",
     description: "Неоновая кибер-рамка аватара.",
     price: 249,
+    category: "frames",
     isFrame: true,
     frameKey: "frame_cyber",
+  },
+  {
+    id: "nick_color_pink",
+    title: "Розовый ник",
+    description: "Перекрашивает ваш никнейм в фирменный розовый во всех топах и профиле.",
+    price: 300,
+    category: "nickColors",
+    isNickColor: true,
+    colorKey: "pink",
+    colorHex: "#ff2f78",
+  },
+  {
+    id: "nick_color_blue",
+    title: "Синий ник",
+    description: "Перекрашивает ваш никнейм в синий во всех топах и профиле.",
+    price: 300,
+    category: "nickColors",
+    isNickColor: true,
+    colorKey: "blue",
+    colorHex: "#4da3ff",
+  },
+  {
+    id: "nick_color_green",
+    title: "Зелёный ник",
+    description: "Перекрашивает ваш никнейм в зелёный во всех топах и профиле.",
+    price: 300,
+    category: "nickColors",
+    isNickColor: true,
+    colorKey: "green",
+    colorHex: "#3ddc84",
+  },
+  {
+    id: "nick_color_red",
+    title: "Красный ник",
+    description: "Перекрашивает ваш никнейм в красный во всех топах и профиле.",
+    price: 300,
+    category: "nickColors",
+    isNickColor: true,
+    colorKey: "red",
+    colorHex: "#ff4d4f",
+  },
+  {
+    id: "paid_verify",
+    title: "Покупная верификация",
+    description: "Отдельный красный значок верификации рядом с ником — только в мини-аппе. Не заменяет обычную верификацию от администрации.",
+    price: 10000,
+    category: "verification",
   },
 ];
