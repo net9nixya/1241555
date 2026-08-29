@@ -160,7 +160,7 @@ export default function SearchOverlay({
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span className="search-result-name">
                   {hit.nickname}
-                  {hit.devVerified && <Code2 size={13} style={{ color: "var(--accent)", flexShrink: 0 }} />}
+                  {hit.devVerified && <Code2 size={13} style={{ color: "var(--dev-blue)", flexShrink: 0 }} />}
                   {hit.verified && <ShieldCheck size={13} style={{ color: "var(--accent)", flexShrink: 0 }} />}
                 </span>
                 <span className="search-result-sub">
