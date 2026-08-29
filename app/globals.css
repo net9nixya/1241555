@@ -330,6 +330,10 @@ a {
   object-fit: cover;
   object-position: 88% center;
   display: block;
+  /* Приглушаем яркость/насыщенность самой картинки заранее — так текст
+     остаётся читаемым даже на светлых/пёстрых баннерах ещё до градиента
+     ниже, а не полагается только на затемнение поверх. */
+  filter: brightness(0.72) saturate(0.92);
 }
 
 @media (max-width: 480px) {
@@ -338,8 +342,38 @@ a {
   }
 }
 
+/* Скрим поверх картинки баннера — раньше затемнение висело на background
+   самого .hero, а .hero-banner (position:absolute, z-index:0) рисуется
+   ПОВЕРХ фона родителя независимо от z-index, поэтому затемнение было
+   невидимым и баннер "засвечивал" текст. Правильное место — псевдоэлемент
+   самого .hero-banner: он ложится поверх <img>, но остаётся под контентом
+   карточки (.hero-top, z-index:1). Сильнее гасим слева (там ник/бейджи) и
+   снизу, справа/сверху оставляем картинку заметнее. */
+.hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(5, 5, 8, 0.88) 0%, rgba(5, 5, 8, 0.62) 42%, rgba(5, 5, 8, 0.32) 100%),
+    linear-gradient(180deg, rgba(5, 5, 8, 0.1) 0%, rgba(5, 5, 8, 0.55) 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  /* На телефоне карточка намного уже, а картинка баннера настолько же
+     "широкая" по сюжету — без более сильного и более равномерного
+     затемнения текст поверх неё почти не читается. */
+  .hero-banner::after {
+    background: linear-gradient(100deg, rgba(5, 5, 8, 0.92) 0%, rgba(5, 5, 8, 0.78) 55%, rgba(5, 5, 8, 0.5) 100%),
+      linear-gradient(180deg, rgba(5, 5, 8, 0.2) 0%, rgba(5, 5, 8, 0.62) 100%);
+  }
+}
+
 .hero-has-banner {
-  background: linear-gradient(180deg, rgba(8, 8, 12, 0.6), rgba(8, 8, 12, 0.78));
+  /* Фон самой карточки под баннером всё равно должен быть тёмным на случай,
+     если картинка не заполнит все 100% (например, пока грузится) —
+     оставляем, но теперь это уже подстраховка, а не единственный слой
+     затемнения. */
+  background: linear-gradient(180deg, rgba(8, 8, 12, 0.85), rgba(8, 8, 12, 0.92));
 }
 
 .hero-top {
@@ -2008,19 +2042,57 @@ a {
   }
 }
 
-/* ---------- settings panel (переиспользует .search-overlay/.search-panel) ---------- */
+/* ---------- settings panel (переиспользует .search-overlay/.search-panel) ----------
+   Каждая секция настроек — отдельная стеклянная карточка (как .card), не
+   просто блок с отступом: так легче сканировать глазами длинную панель, и
+   она визуально совпадает с остальным приложением. У заголовка каждой
+   секции — свой мягкий цветовой акцент (см. nth-of-type ниже), чтобы разделы
+   легче различались, плюс лёгкий stagger при открытии панели. Порядок
+   секций соответствует SettingsPanel.tsx: ник → игровой ID → промокод →
+   рамки → баннеры → свечение. */
 
-.settings-section {
-  margin-bottom: 22px;
+.search-panel .search-results {
+  padding-top: 2px;
 }
 
+.settings-section {
+  position: relative;
+  margin-bottom: 12px;
+  padding: 18px 18px 20px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(165deg, var(--card-top), var(--card-bottom));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  animation: rise-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.settings-section:nth-of-type(1) { animation-delay: 0.02s; }
+.settings-section:nth-of-type(2) { animation-delay: 0.06s; }
+.settings-section:nth-of-type(3) { animation-delay: 0.1s; }
+.settings-section:nth-of-type(4) { animation-delay: 0.14s; }
+.settings-section:nth-of-type(5) { animation-delay: 0.18s; }
+.settings-section:nth-of-type(6) { animation-delay: 0.22s; }
+
+.settings-section:nth-of-type(1) { --section-tint: var(--accent-2); }
+.settings-section:nth-of-type(2) { --section-tint: var(--mint); }
+.settings-section:nth-of-type(3) { --section-tint: var(--gold); }
+.settings-section:nth-of-type(4) { --section-tint: #b9a3ff; }
+.settings-section:nth-of-type(5) { --section-tint: var(--coral); }
+.settings-section:nth-of-type(6) { --section-tint: var(--accent-2); }
+
 .settings-section-title {
+  display: flex;
+  align-items: center;
   font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 10px;
+  letter-spacing: 0.07em;
+  color: var(--section-tint, var(--accent-2));
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-hair);
 }
 
 .settings-row {
@@ -2030,63 +2102,115 @@ a {
 
 .settings-input {
   flex: 1;
+  min-width: 0;
   border-radius: var(--r-md);
   border: 1px solid var(--border-strong);
-  background: var(--card);
+  background: rgba(0, 0, 0, 0.18);
   color: var(--text);
   font-size: 14px;
   padding: 12px 14px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .settings-input:focus {
   border-color: rgba(255, 47, 120, 0.5);
   box-shadow: 0 0 0 3px var(--accent-soft);
+  background: rgba(0, 0, 0, 0.26);
+}
+
+.settings-input::placeholder {
+  color: var(--muted-soft);
 }
 
 .settings-submit-btn {
   flex-shrink: 0;
+  min-width: 92px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: var(--r-md);
-  padding: 0 18px;
+  padding: 0 16px;
   font-size: 13px;
   font-weight: 700;
   color: #2b0313;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   box-shadow: 0 8px 22px rgba(255, 47, 120, 0.26);
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 .settings-submit-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: default;
+  box-shadow: none;
 }
 
 .settings-submit-btn:not(:disabled):hover {
   transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(255, 47, 120, 0.34);
 }
 
+.settings-submit-btn:not(:disabled):active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Статус-сообщение как аккуратный чип со значком-точкой, а не голый
+   цветной текст — легче замечается и не "плавает" среди остального текста. */
 .settings-feedback {
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 10px 5px 8px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
   animation: rise-in 0.25s ease backwards;
+}
+
+.settings-feedback::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .settings-feedback.ok {
   color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.settings-feedback.ok::before {
+  background: var(--mint);
+  box-shadow: 0 0 6px var(--mint);
 }
 
 .settings-feedback.err {
   color: var(--coral);
+  background: var(--coral-soft);
 }
 
+.settings-feedback.err::before {
+  background: var(--coral);
+  box-shadow: 0 0 6px var(--coral);
+}
+
+/* "Сейчас: ..." — компактная строка-подпись со значением в чипе, а не
+   сплошной текст, чтобы текущее значение сразу считывалось глазами. */
 .settings-current {
+  display: inline-flex;
+  align-items: center;
   font-size: 12px;
-  color: var(--muted-soft);
-  margin-bottom: 8px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hair);
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  margin-bottom: 12px;
 }
 
 .spin {
@@ -2103,17 +2227,21 @@ a {
 .glow-current-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hair);
 }
 
 .glow-current-swatch {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--r-xs);
   border: 1px solid var(--border-strong);
   flex-shrink: 0;
-  box-shadow: 0 0 14px 1px var(--glow-swatch-shadow, transparent);
+  box-shadow: 0 0 16px 1px var(--glow-swatch-shadow, transparent);
   transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -2128,8 +2256,9 @@ a {
 }
 
 .glow-current-text {
-  font-size: 12px;
-  color: var(--muted-soft);
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 600;
 }
 
 .glow-swatch-grid {
@@ -2143,14 +2272,14 @@ a {
   position: relative;
   aspect-ratio: 1;
   border-radius: var(--r-xs);
-  border: 2px solid transparent;
+  border: 2px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   padding: 0;
   transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s ease;
 }
 
 .glow-swatch-btn:hover {
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
 .glow-swatch-btn.active {
@@ -2163,6 +2292,22 @@ a {
   inset: -5px;
   border-radius: 13px;
   border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Галочка на выбранном цвете — mix-blend-mode:difference держит контраст
+   независимо от того, светлый цвет свечения выбран или тёмный. */
+.glow-swatch-btn.active::before {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
 }
 
 .glow-swatch-btn-off {
@@ -2202,6 +2347,11 @@ a {
   background-image: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
   position: relative;
   overflow: hidden;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glow-color-native-swatch:hover {
+  transform: scale(1.06);
 }
 
 .glow-color-native-swatch::after {
@@ -2217,7 +2367,7 @@ a {
   min-width: 0;
   border-radius: var(--r-md);
   border: 1px solid var(--border-strong);
-  background: var(--card);
+  background: rgba(0, 0, 0, 0.18);
   color: var(--text);
   font-size: 14px;
   padding: 12px 14px;
@@ -2266,18 +2416,23 @@ a {
   gap: 10px;
 }
 
-.frame-inventory-empty {
+.frame-inventory-empty,
+.banner-inventory-list ~ .frame-inventory-empty {
   font-size: 12.5px;
-  color: var(--muted);
-  padding: 10px 2px;
+  color: var(--muted-soft);
+  padding: 18px 12px;
+  text-align: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+  line-height: 1.5;
 }
 
 .frame-slot-btn {
   position: relative;
   aspect-ratio: 1;
   border-radius: var(--r-sm);
-  border: 2px solid transparent;
-  background: var(--card-soft);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.16);
   cursor: pointer;
   padding: 0;
   display: grid;
@@ -2287,6 +2442,7 @@ a {
 
 .frame-slot-btn:hover:not(:disabled) {
   transform: scale(1.05);
+  border-color: var(--border-strong);
 }
 
 .frame-slot-btn:disabled {
@@ -2296,6 +2452,23 @@ a {
 
 .frame-slot-btn.active {
   border-color: var(--accent);
+}
+
+.frame-slot-btn.active::after {
+  content: "✓";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: #2b0313;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 0 2px var(--bg);
 }
 
 .frame-slot-preview {
@@ -2346,20 +2519,37 @@ a {
   position: relative;
   width: 100%;
   border-radius: var(--r-sm);
-  border: 2px solid transparent;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   padding: 0;
   cursor: pointer;
   overflow: hidden;
-  background: var(--card-soft);
+  background: rgba(0, 0, 0, 0.16);
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
 .banner-slot-btn:hover {
   transform: translateY(-1px);
+  border-color: var(--border-strong);
 }
 
 .banner-slot-btn.active {
-  border-color: #fff;
+  border-color: var(--accent);
+}
+
+.banner-slot-btn.active::after {
+  content: "✓ Надет";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  font-size: 10px;
+  font-weight: 800;
+  color: #2b0313;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
 }
 
 .banner-slot-preview {
@@ -2385,6 +2575,10 @@ a {
 .banner-slot-btn-none.active {
   border-color: #fff;
   color: var(--text);
+}
+
+.banner-slot-btn-none.active::after {
+  content: none;
 }
 
 /* ==========================================================================
